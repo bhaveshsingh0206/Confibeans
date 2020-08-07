@@ -14,19 +14,23 @@ function getData() {
 
          }),
          success: function(msg) {
-                jsFile=msg["jsFile"]
-                confibean_data = msg;
-                var fn = window[jsFile](msg);
+                console.log(msg)
+                confibean_data = msg["data"];
+                jcb = msg["jcb"]
+                var keys = Object.keys(jcb)
+                confibean_data = confibean_data["Sections"]["Execution"]
+                keys.forEach((key)=>{
+                    data = confibean_data[key]
+                    jsFile = jcb[key]["ConfibeanName"]
+                    console.log(jsFile) 
+                    var fn = window[jsFile](data);
+                    if (typeof fn === "function"){
+                        fn();     
+                    } 
+                })
                 
-            if (typeof fn === "function"){
-                fn();
-                // setTimeout(function afterTwoSeconds() {
-                //     console.log("Pirfkrnj")
-                //     console.log(dat)
-                //     $(".data").html(dat)
-                //   }, 1000)      
                 
-            } 
+            
                        	
          },
          error: function(result) {

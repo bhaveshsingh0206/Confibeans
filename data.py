@@ -6,7 +6,9 @@ app = Flask(__name__)
 CORS(app)
 with open('bshextractor.json') as f:
     confibean3DATA = json.load(f)
-
+with open('jcb.json') as g:
+    jcb = json.load(g)
+print(jcb["Properties"])
 confibean1DATA = {
     "success": True,
     "jsFile":"confibean1",
@@ -103,8 +105,11 @@ def getData():
         msg = confibean3DATA
     else:
         msg = confibean1DATA
-
-    return msg
+    response = {
+        "data":msg,
+        "jcb": jcb
+    }
+    return response
 
 @app.route('/api/receiveJson', methods=['POST'])
 def receiveJson():

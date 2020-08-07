@@ -1,6 +1,4 @@
-function confibean3(msg){
-    var sections = msg["Sections"]
-    var properties = sections["Execution"]["Properties"]
+function confibean3(properties){
     var keys = Object.keys(properties);
     var htmlData = ""
     keys.forEach((key, i)=>{

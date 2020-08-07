@@ -1,5 +1,4 @@
-{   "jsFile": "confibean3",
-    "ModuleName": "BSHeaderExtractor",
+{  "ModuleName": "BSHeaderExtractor",
     "Sections": {
         "Execution": {
             "Representation": "KeyValue",
