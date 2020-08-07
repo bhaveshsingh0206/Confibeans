@@ -1,0 +1,207 @@
+{   "jsFile": "confibean3",
+    "ModuleName": "BSHeaderExtractor",
+    "Sections": {
+        "Execution": {
+            "Representation": "KeyValue",
+            "Properties": {
+                "temp_folder_path": {
+                    "Editable": "True",
+                    "ControlType": "Textbox",
+                    "DefaultValue": "/Dtect/temp",
+                    "OtherValues": []
+                },
+                "intermediate_output_folder_path": {
+                    "Editable": "True",
+                    "ControlType": "Textbox",
+                    "DefaultValue": "/Dtect/temp",
+                    "OtherValues": []
+                },
+                "leptonica_path": {
+                    "Editable": "True",
+                    "ControlType": "Textbox",
+                    "DefaultValue": "/Dtect/leptonica-1.74.4/prog",
+                    "OtherValues": []
+                },
+                "knowledge_csv_filepath": {
+                    "Editable": "True",
+                    "ControlType": "Textbox",
+                    "DefaultValue": "/Dtect/data/fff_knowledge.csv",
+                    "OtherValues": []
+                },
+                "pickle_file_path": {
+                    "Editable": "True",
+                    "ControlType": "Textbox",
+                    "DefaultValue": "/Dtect/data/BankStatementHeader 12 May 2020, 1:53 pm.pickle",
+                    "OtherValues": []
+                },
+                "table_and_header_detection_serviced_model_hostname": {
+                    "Editable": "True",
+                    "ControlType": "Textbox",
+                    "DefaultValue": "tfserving",
+                    "OtherValues": []
+                },
+                "table_and_header_classification_servicedmodel_port": {
+                    "Editable": "True",
+                    "ControlType": "Textbox",
+                    "DefaultValue": "8500",
+                    "OtherValues": []
+                },
+                "table_and_header_detection_model_name": {
+                    "Editable": "True",
+                    "ControlType": "Textbox",
+                    "DefaultValue": "TableHeaderInvoice",
+                    "OtherValues": []
+                },
+                "table_and_header_detection_classes": {
+                    "Editable": "True",
+                    "ControlType": "list",
+                    "DefaultValue": "['LineItemTable', 'Header', 'TaxTable']",
+                    "OtherValues": []
+                },
+                "table_and_header_detection_model_thresh": {
+                    "Editable": "True",
+                    "ControlType": "Textbox",
+                    "DefaultValue": "0.8",
+                    "OtherValues": []
+                },
+                "ORIENTATION_DETECTION_HOSTNAME": {
+                    "Editable": "True",
+                    "ControlType": "Textbox",
+                    "DefaultValue": "192.168.1.28",
+                    "OtherValues": []
+                },
+                "ORIENTATION_DETECTION_PORT": {
+                    "Editable": "True",
+                    "ControlType": "Textbox",
+                    "DefaultValue": "8900",
+                    "OtherValues": []
+                },
+                "ORIENTATION_DETECTION_CLASSES": {
+                    "Editable": "True",
+                    "ControlType": "list",
+                    "DefaultValue": "['1','2','3','4']",
+                    "OtherValues": []
+                },
+                "ORIENTATION_DETECTION_MODEL_NAME": {
+                    "Editable": "True",
+                    "ControlType": "Textbox",
+                    "DefaultValue": "OrientationDetection",
+                    "OtherValues": []
+                },
+                "non_caption_property_detection_port": {
+                    "Editable": "True",
+                    "ControlType": "Textbox",
+                    "DefaultValue": "8500",
+                    "OtherValues": []
+                },
+                "non_caption_property_detection_host_name": {
+                    "Editable": "True",
+                    "ControlType": "Textbox",
+                    "DefaultValue": "tfserving",
+                    "OtherValues": []
+                },
+                "non_caption_property_detection_model_classes": {
+                    "Editable": "True",
+                    "ControlType": "list",
+                    "DefaultValue": "['AccountName', 'AccountAddress', 'StatmentPeriod', 'Axis Bank', 'Bank Of Maharashtra', 'Citi Bank', 'HDFC Bank', 'ICICI Bank', 'Kotak Mahindra Bank', 'State Bank Of India', 'Standard Chartered Bank', 'HSBC Bank', 'IDBI Bank', 'Indian Bank', 'Union Bank', 'Canara Bank', 'Saraswat Bank', 'Oriental Bank Of Commerce', 'Indusind Bank', 'IDFC Bank', 'Yes Bank', 'Punjab National Bank', 'Allahabad Bank', 'Andhra Bank', 'Bank Of India', 'Bank Of Baroda', 'Central Bank', 'Dena Bank', 'Federal Bank', 'Syndicate Bank']",
+                    "OtherValues": []
+                },
+                "non_caption_property_detection_model_name": {
+                    "Editable": "True",
+                    "ControlType": "Textbox",
+                    "DefaultValue": "BankStatement",
+                    "OtherValues": []
+                },
+                "non_caption_property_detection_model_thresh": {
+                    "Editable": "True",
+                    "ControlType": "Textbox",
+                    "DefaultValue": "0.5",
+                    "OtherValues": []
+                },
+                "non_caption_class_property_mapping": {
+                    "Editable": "True",
+                    "ControlType": "Textbox",
+                    "DefaultValue": "{'AccountName':'Account Holder Name', 'AccountAddress':'Account Holder Address', 'StatmentPeriod':'Statement Period', 'Axis Bank':'Bank Name', 'Bank Of Maharashtra':'Bank Name', 'Citi Bank':'Bank Name', 'HDFC Bank':'Bank Name', 'ICICI Bank':'Bank Name', 'Kotak Mahindra Bank':'Bank Name', 'State Bank Of India':'Bank Name', 'Standard Chartered Bank':'Bank Name', 'HSBC Bank':'Bank Name', 'IDBI Bank':'Bank Name', 'Indian Bank':'Bank Name', 'Union Bank':'Bank Name', 'Canara Bank':'Bank Name', 'Saraswat Bank':'Bank Name', 'Oriental Bank Of Commerce':'Bank Name', 'Indusind Bank':'Bank Name', 'IDFC Bank':'Bank Name', 'Yes Bank':'Bank Name', 'Punjab National Bank':'Bank Name', 'Allahabad Bank':'Bank Name', 'Andhra Bank':'Bank Name', 'Bank Of India':'Bank Name', 'Bank Of Baroda':'Bank Name', 'Central Bank':'Bank Name', 'Dena Bank':'Bank Name', 'Federal Bank':'Bank Name', 'Syndicate Bank':'Bank Name'}",
+                    "OtherValues": []
+                },
+                "textract_service_name": {
+                    "Editable": "True",
+                    "ControlType": "Textbox",
+                    "DefaultValue": "textract",
+                    "OtherValues": []
+                },
+                "textract_region_name": {
+                    "Editable": "True",
+                    "ControlType": "Textbox",
+                    "DefaultValue": "us-east-1",
+                    "OtherValues": []
+                },
+                "textract_endpoint_url": {
+                    "Editable": "True",
+                    "ControlType": "Textbox",
+                    "DefaultValue": "https://textract.us-east-1.amazonaws.com",
+                    "OtherValues": []
+                },
+                "textract_output_format": {
+                    "Editable": "True",
+                    "ControlType": "Textbox",
+                    "DefaultValue": "WORD AND LINE",
+                    "OtherValues": []
+                },
+                "objectmap_csv_column_name": {
+                    "Editable": "True",
+                    "ControlType": "list",
+                    "DefaultValue": "['xmin', 'ymin', 'xmax', 'ymax', 'Object']",
+                    "OtherValues": []
+                },
+                "models": {
+                    "Editable": "True",
+                    "ControlType": "list",
+                    "DefaultValue": "['TableHeaderInvoice', 'OrientationDetection', 'BankStatement']",
+                    "OtherValues": []
+                },
+                "debug": {
+                    "Editable": "True",
+                    "ControlType": "Textbox",
+                    "DefaultValue": "True",
+                    "OtherValues": []
+                },
+                "freeformfield_tbox_name": {
+                    "Editable": "True",
+                    "ControlType": "Textbox",
+                    "DefaultValue": "BankStatementHeader",
+                    "OtherValues": []
+                }
+            }
+        },
+        "Communication": {
+            "Representation": "KeyValue",
+            "Properties": {
+                "servername": {
+                    "Editable": "True",
+                    "ControlType": "Textbox",
+                    "DefaultValue": "192.168.1.28",
+                    "OtherValues": []
+                },
+                "exchange_type": {
+                    "Editable": "True",
+                    "ControlType": "Textbox",
+                    "DefaultValue": "topic",
+                    "OtherValues": []
+                },
+                "username": {
+                    "Editable": "True",
+                    "ControlType": "Textbox",
+                    "DefaultValue": "test",
+                    "OtherValues": []
+                },
+                "password": {
+                    "Editable": "True",
+                    "ControlType": "Textbox",
+                    "DefaultValue": "test",
+                    "OtherValues": []
+                }
+            }
+        }
+    }
+}
