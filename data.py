@@ -7,88 +7,91 @@ CORS(app)
 with open('bshextractor.json') as f:
     confibean3DATA = json.load(f)
 
+with open('bshextractor2.json') as f:
+    confibean4DATA = json.load(f)
+
 confibean1DATA = {
     "success": True,
-    "jsFile":"confibean1",
-    "data":[
+    "jsFile": "confibean1",
+    "data": [
         {
-            "Title":"1st Example",
+            "Title": "1st Example",
             "Description": "Demo testing app"
         },
         {
-            "Title":"2nd Example",
+            "Title": "2nd Example",
             "Description": "Demo testing app"
         },
         {
-            "Title":"3rd Example",
+            "Title": "3rd Example",
             "Description": "Demo testing app"
         },
         {
-            "Title":"4th Example",
+            "Title": "4th Example",
             "Description": "Demo testing app"
         }
     ]
 }
 confibean2DATA = {
     "success": True,
-    "data":{
+    "data": {
         "header":
-            ["Sr. No","Name", "Percentage","Grade"],
+            ["Sr. No", "Name", "Percentage", "Grade"],
         "body": [
             {
-                "Sr. No" : "1",
-                "Name" : "Bhavesh",
-                "Percentage" : "99%",
-                "Grade" : "A+"
+                "Sr. No": "1",
+                "Name": "Bhavesh",
+                "Percentage": "99%",
+                "Grade": "A+"
             },
             {
-                "Sr. No" : "2",
-                "Name" : "Ali",
-                "Percentage" : "58%",
-                "Grade" : "F-"
+                "Sr. No": "2",
+                "Name": "Ali",
+                "Percentage": "58%",
+                "Grade": "F-"
             },
             {
-                "Sr. No" : "3",
-                "Name" : "Batman",
-                "Percentage" : "88%",
-                "Grade" : "A-"
+                "Sr. No": "3",
+                "Name": "Batman",
+                "Percentage": "88%",
+                "Grade": "A-"
             },
             {
-                "Sr. No" : "4",
-                "Name" : "Rahil",
-                "Percentage" : "70%",
-                "Grade" : "C+"
+                "Sr. No": "4",
+                "Name": "Rahil",
+                "Percentage": "70%",
+                "Grade": "C+"
             },
             {
-                "Sr. No" : "5",
-                "Name" : "kmkc",
-                "Percentage" : "58%",
-                "Grade" : "F-"
+                "Sr. No": "5",
+                "Name": "kmkc",
+                "Percentage": "58%",
+                "Grade": "F-"
             },
             {
-                "Sr. No" : "6",
-                "Name" : "MNln",
-                "Percentage" : "58%",
-                "Grade" : "F-"
+                "Sr. No": "6",
+                "Name": "MNln",
+                "Percentage": "58%",
+                "Grade": "F-"
             },
             {
-                "Sr. No" : "7",
-                "Name" : "AJNJNli",
-                "Percentage" : "58%",
-                "Grade" : "F-"
+                "Sr. No": "7",
+                "Name": "AJNJNli",
+                "Percentage": "58%",
+                "Grade": "F-"
             },
             {
-                "Sr. No" : "8",
-                "Name" : "AKLOL",
-                "Percentage" : "58%",
-                "Grade" : "F-"
+                "Sr. No": "8",
+                "Name": "AKLOL",
+                "Percentage": "58%",
+                "Grade": "F-"
             },
 
-        ]
+            ]
     },
-    "jsFile":"confibean2"
+    "jsFile": "confibean2"
 }
-@app.route('/',methods=['GET'])
+@app.route('/', methods=['GET'])
 def renderHome():
     return render_template('base.html')
 
@@ -101,24 +104,25 @@ def getData():
         msg = confibean2DATA
     elif dataType == "data3":
         msg = confibean3DATA
+    elif dataType == "data4":
+        msg = confibean4DATA
     else:
         msg = confibean1DATA
 
     return msg
+
 
 @app.route('/api/receiveJson', methods=['POST'])
 def receiveJson():
     data = request.get_json(force=True)['data']
     with open('data.json', 'w') as f:
         json.dump(data, f, indent=3)
-    
+
     response = {
-    "success" : True,
+        "success": True,
     }
     return response
 
 
-
-
 if __name__ == "__main__":
-	app.run(debug=True)
+    app.run(debug=True)

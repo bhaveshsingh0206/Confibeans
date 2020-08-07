@@ -1,25 +1,27 @@
-function confibean3(msg) {
+function confibean4(msg) {
   var sections = msg["Sections"];
   var properties = sections["Execution"]["Properties"];
   var keys = Object.keys(properties);
   var htmlData = "";
+  document.body.style.background = "#202124";
+  //   document.label.style.background = "#fff";
   keys.forEach((key, i) => {
     data = properties[key];
     if (data["ControlType"] == "Textbox") {
       if (data["Editable"] == "True") {
         htmlData +=
-          '<div class="form-group"><label for="exampleInputEmail1">' +
+          '<div class="form-group"><label class="label2" for="exampleInputEmail1">' +
           key +
-          '</label><input type="text" class="form-control" value="' +
+          '</label><input type="text" class="form-control2" value="' +
           data["DefaultValue"] +
           '" id="' +
           key +
           '"></div>';
       } else {
         htmlData +=
-          '<div class="form-group"><label for="exampleInputEmail1">' +
+          '<div class="form-group"><label class="label2" for="exampleInputEmail1">' +
           key +
-          '</label><input type="text" class="form-control" id="' +
+          '</label><input type="text" class="form-control2" id="' +
           key +
           '" readonly></div>';
       }
@@ -29,10 +31,10 @@ function confibean3(msg) {
       d = d.split(",");
       console.log(d.length);
       if (d.length > 0) {
-        htmlData += "<label >" + key + "</label>";
+        htmlData += "<label class='label2'>" + key + "</label>";
         htmlData += '<ul class="list-group">';
         d.forEach((j, t) => {
-          htmlData += '<li class="list-group-item">' + j + "</li>";
+          htmlData += '<li class="list-group-item2">' + j + "</li>";
           if (j == d.length - 1) {
             htmlData += "</ul>";
           }
