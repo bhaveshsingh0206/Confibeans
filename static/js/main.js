@@ -1,5 +1,5 @@
-$(".get").click(()=>{
-    getData()
+$(".get").click(() => {
+  getData();
 });
 var confibean_data;
 function getData() {
@@ -10,8 +10,6 @@ function getData() {
         contentType: 'application/json',
          data: JSON.stringify({
             type:"data3",
-           
-
          }),
          success: function(msg) {
                 console.log(msg)
@@ -27,50 +25,41 @@ function getData() {
                     if (typeof fn === "function"){
                         fn();     
                     } 
-                })
-                
-                
-            
-                       	
+                })             	
          },
          error: function(result) {
          }      
       });
-
 }
 getData();
-function save () {
-    var sections = confibean_data["Sections"]
-    var properties = sections["Execution"]["Properties"]
-    var keys = Object.keys(properties);
-    var htmlData = ""
-    keys.forEach((key, i)=>{
-        properties[key]["value"] =  $('#'+key).val()
-        if(i == keys.length-1){
-            confibean_data["Sections"]["Execution"]["Properties"] = properties
-            
-            sendData(confibean_data)
-        }
-    });
-};
+function save() {
+  var sections = confibean_data["Sections"];
+  var properties = sections["Execution"]["Properties"];
+  var keys = Object.keys(properties);
+  var htmlData = "";
+  keys.forEach((key, i) => {
+    properties[key]["value"] = $("#" + key).val();
+    if (i == keys.length - 1) {
+      confibean_data["Sections"]["Execution"]["Properties"] = properties;
+
+      sendData(confibean_data);
+    }
+  });
+}
 
 function sendData(data) {
-	$.ajax({
-         url: 'http://127.0.0.1:5000/api/receiveJson',
-         method: 'POST',
-         processData: false,
-        contentType: 'application/json',
-         data: JSON.stringify({
-            data:data,
-           
-
-         }),
-         success: function(msg) {
-            console.log(msg)
-            alert("Saved")
-         },
-         error: function(result) {
-         }      
-      });
-
+  $.ajax({
+    url: "http://127.0.0.1:5000/api/receiveJson",
+    method: "POST",
+    processData: false,
+    contentType: "application/json",
+    data: JSON.stringify({
+      data: data,
+    }),
+    success: function (msg) {
+      console.log(msg);
+      alert("Saved");
+    },
+    error: function (result) {}
+  });
 }
