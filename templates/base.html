@@ -23,29 +23,29 @@
     <!-- Main layout -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
       <a class="navbar-brand" href="#">
-        <img
-          src="/docs/4.5/assets/brand/bootstrap-solid.svg"
-          width="30"
-          height="30"
-          class="d-inline-block align-top"
-          alt=""
-          loading="lazy"
-        />
         <font color="white">Cerelabs</font>
       </a>
     </nav>
+    <div id="demo">
+    </div>
     <div class="container margin">
       <div class="col-md-12 text-center">
+        <br>
         <button
           type="button"
-          class="btn btn-outline-danger btn-md center get d-none"
+          class="btn btn-outline-danger btn-md center"
+          id="get"
         >
           Get Data
         </button>
+        <br>
+        <br>
+        <div id="data_here">
+          
+        </div>
       </div>
     </div>
 
-    <div class="container margin data"></div>
 
     <!-- Main layout -->
 
@@ -65,26 +65,46 @@
       integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
       crossorigin="anonymous"
     ></script>
+    <!-- <script
+      type="text/javascript"
+      src="{{ url_for('static', filename='js/main.js') }}"
+    ></script> -->
+    <script
+      type="text/javascript"
+      src="{{ url_for('static', filename='js/cbList.js') }}"
+    ></script>
+    <script
+      type="text/javascript"
+      src="{{ url_for('static', filename='js/classes.js') }}"
+    ></script>
+    <script
+      type="text/javascript"
+      src="{{ url_for('static', filename='js/jsonpath.js') }}"
+    ></script>
+    <script
+      type="text/javascript"
+      src="{{ url_for('static', filename='js/CBText.js') }}"
+    ></script>
+    <script
+      type="text/javascript"
+      src="{{ url_for('static', filename='js/CBNode.js') }}"
+    ></script>
+    <script
+      type="text/javascript"
+      src="{{ url_for('static', filename='js/cbSection1.js') }}"
+    ></script>
     <script
       type="text/javascript"
       src="{{ url_for('static', filename='js/main.js') }}"
     ></script>
     <script
       type="text/javascript"
-      src="{{ url_for('static', filename='js/confibean1.js') }}"
+      src="{{ url_for('static', filename='js/CBContainer.js') }}"
     ></script>
-    <script
-      type="text/javascript"
-      src="{{ url_for('static', filename='js/confibean2.js') }}"
-    ></script>
-    <script
-      type="text/javascript"
-      src="{{ url_for('static', filename='js/confibean3.js') }}"
-    ></script>
-    <script
+    <!-- <script
       type="text/javascript"
       src="{{ url_for('static', filename='js/confibean4.js') }}"
-    ></script>
+    ></script> -->
     <script type="text/javascript"></script>
   </body>
 </html>

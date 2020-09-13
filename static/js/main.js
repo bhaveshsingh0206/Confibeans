@@ -1,6 +1,7 @@
-$(".get").click(() => {
-  getData();
-});
+// $(".get").click(() => {
+//   getData();
+// });
+/*
 var confibean_data;
 function getData() {
 	$.ajax({
@@ -63,3 +64,29 @@ function sendData(data) {
     error: function (result) {}
   });
 }
+*/
+
+function getDataContainer() {
+      $.ajax({
+          url: 'http://127.0.0.1:5000/api/getJson',
+          method: 'POST',
+          processData: false,
+          contentType: 'application/json',
+          data: JSON.stringify({
+             type: "sample",
+          }),
+          success: function(data) {
+            var a = new CBContainer()
+            a.Load(data)                   
+          },
+          error: function(err) {
+            console.log(err)
+          }      
+       });  
+}
+
+
+$("#get").click(()=>{    
+  getDataContainer()
+})
+

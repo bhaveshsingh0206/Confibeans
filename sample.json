@@ -1,0 +1,12 @@
+{
+
+    "DataElement1": {
+        "DataElement11" : "DE11-V1",
+        "DataElement12" : "DE12-V2",
+        "DataElement13" : {
+            "DataElement131" : "DE131-V1",
+            "DataElement132" : "DE132-V2"
+        }
+    }
+
+}
