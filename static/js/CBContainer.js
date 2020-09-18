@@ -1,3 +1,8 @@
+import dynamicClass  from './classes.js';
+import CBNode from './CBNode.js'
+import CBText from './CBText.js'
+import cbType1 from './cbType1.js'
+import cbClass1 from './cbClass1.js'
 class CBContainer {
     constructor() {
         this.data = {}
@@ -50,7 +55,8 @@ class CBContainer {
               Name = newName + y;
               type = "Object";
               var path_obj = path + ".." + prop;
-              this.setObj(this.CBTree, newName, Name, path, type);
+              // setObj(a, newName, Name, path_obj, type);
+              this.setObj(this.CBTree, newName, Name, path_obj, type);
               this.restructure(obj[prop], Name, path_obj);
               y++;
             }
@@ -84,7 +90,7 @@ class CBContainer {
       }
       return temp
     }
-    Load (data) {
+    Load (data, cb) {
         var keys = Object.keys(data)
         this.data = data
         keys.forEach((key)=>{
@@ -93,27 +99,76 @@ class CBContainer {
             this.CBTree = this.createBasicCBTree(key, data[key]["cbd"]["cbname"])
             this.Render("data_here")
           } else {
-            this.restructure({[key]:data[key]}, "Node", "")
-            setTimeout(()=>{
-              this.Render("data_here")
-            }, 200)
+            var CBClassofNode = cb["root"]["CBClassofNode"]
+            var paths = CBClassofNode["ApplyTo"]
+            for (var i=0; i<paths.length; i++) {
+            
+              var obj = jsonPath(data, paths[i])[0]
+              console.log("Check ", obj)
+              if (obj == data[key]){
+                console.log("if m gaya")
+                var cbClass = CBClassofNode["CB"]
+                this.CBTree = this.createBasicCBTree(key, cbClass)
+                this.Render("data_here")
+                break
+              }
+              if (i==paths.length-1) {
+                var CBTypeofNode = cb["root"]["CBTypeofNode"]
+                var paths_type = CBTypeofNode["ApplyTo"]
+                // console.log(typeof(paths_type))
+                var type = CBTypeofNode["Type"]
+                for (var j=0; j<paths_type.length; j++) {
+                  // console.log(paths_type[j])
+                  var obj = jsonPath(data, paths_type[j])[0]
+                  console.log("Here ,", obj)
+                  console.log(data[key])
+                  if (obj == data[key]){
+                    var CBClassofType = cb["root"]["CBClassofType"]
+                    var types = CBClassofType["ApplyTo"]
+                    console.log(types)
+                    if (types.includes(type)){
+                      var cbClass = CBClassofType["CB"]
+                      this.CBTree = this.createBasicCBTree(key, cbClass)
+                      this.Render("data_here")
+                      break
+                    }
+                  
+                }
+                if (j == paths_type.length -1) {
+                  this.restructure({[key]:data[key]}, "Node", "")
+                  this.Render("data_here")
+                }
+                }
+                
+              }
+            }
+            
+            
           }
         })         
         
     }
     Render (div) {
+      console.log("This is is CbTree")
+      console.log(this.CBTree)
         var keys = Object.keys(this.CBTree["root"]) 
         keys.forEach(key => {
             var objType = this.CBTree["root"][key]["CB"]
-            if (objType == "CBNode") {
-              var obj = new CBNode(this.data)
-              obj.Render(div, this.CBTree["root"][key])
-            } else {
-              var obj = new cbSection1(this.data)
+            // console.log(objType)
+            var obj = dynamicClass(objType)
+            // console.log(obj)
+            obj = new obj(this.data)
+            obj.Render(div, this.CBTree["root"][key])
+            // if (objType == "CBNode") {
+            //   var obj = new CBNode(this.data)
+            //   obj.Render(div, this.CBTree["root"][key])
+            // } else {
+            //   var obj = new cbSection1(this.data)
 
-              obj.Render(div, this.CBTree["root"][key])
-            }
+            //   obj.Render(div, this.CBTree["root"][key])
+            // }
             
         });  
     }   
 }
+export default CBContainer

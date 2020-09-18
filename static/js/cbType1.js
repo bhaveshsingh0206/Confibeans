@@ -1,4 +1,4 @@
-class cbSection1 {
+class cbType1 {
     constructor(data) {
         this.data = data
     }
@@ -9,7 +9,7 @@ class cbSection1 {
         html += `<div class="text-left"><h4>${data["SectionTitle"]}</h4></div>`
         data["values"].forEach((caption, i) => {
             html += `<div class="form-group row mt-4">
-            <label for="${caption["Caption"]}" class="col-sm-2 col-form-label mt-0 col-form-label">${caption["Caption"]}</label>
+            <label for="${caption["Caption"]}" class="col-sm-2 col-form-label mt-0 col-form-label text-danger">${caption["Caption"]}</label>
             <div class="col-sm-10">
               <input class="form-control col-form-label-sm col-md-6" id="${caption["Caption"]}" value="${caption["Value"]}">
             </div></div>`
@@ -19,4 +19,4 @@ class cbSection1 {
         }); 
     }
 }
-export default cbSection1
+export default cbType1

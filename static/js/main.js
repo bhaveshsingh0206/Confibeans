@@ -1,3 +1,5 @@
+import dynamicClass  from './classes.js';
+import CBContainer from './CBContainer.js'
 // $(".get").click(() => {
 //   getData();
 // });
@@ -75,9 +77,14 @@ function getDataContainer() {
           data: JSON.stringify({
              type: "sample",
           }),
-          success: function(data) {
-            var a = new CBContainer()
-            a.Load(data)                   
+          success: function(response) {
+            var data = response["data"]
+            var cb = response["cb"]
+            console.log("cb ", cb)
+            var obj = dynamicClass('CBContainer')
+            obj = new obj()
+            // console.log(obj)
+            obj.Load(data, cb)                   
           },
           error: function(err) {
             console.log(err)

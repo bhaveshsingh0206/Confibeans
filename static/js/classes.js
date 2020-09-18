@@ -1,13 +1,25 @@
-// import cbSection1 from './cbSection1';
-// import CBNode from './CBNode';
-// import CBText from './cbText';
-// const classesMapping = {
-//     'cbSection1': new cbSection1,
-//     'CBNode': new CBNode,
-//     "CBText": new CBText
-//   };
+import cbSection1 from './cbSection1.js'
+import CBNode from './CBNode.js'
+import CBText from './CBText.js'
+import cbType1 from './cbType1.js'
+import cbClass1 from './cbClass1.js'
+import CBList from './cbList.js'
+import CBContainer from './CBContainer.js'
+import abc from './prac.js'
 
 
-// function dynamicClass (name) {
-//   return classesMapping[name];
-// }
+
+const classes = {
+    abc,
+    cbSection1,
+    CBNode,
+    CBText,
+    cbType1,
+    cbClass1,
+    CBList,
+    CBContainer
+};
+
+export default function dynamicClass (name) {
+    return classes[name];
+  }

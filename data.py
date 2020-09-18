@@ -19,7 +19,7 @@ data = {
 }
 finalData = {
     "Section1":{
-        "SectionTitle":"Section Title 1",
+        "SectionTitle":"Getting load through inline cbd",
         "values":[
             {
                 "Caption":"Caption1",
@@ -35,7 +35,34 @@ finalData = {
         }
     },
     "Section2":{
-        "SectionTitle":"Section Title 2",
+        "SectionTitle":"Getting load through default classes",
+        "values":[
+            {
+                "Caption":"Caption1",
+                "Value1":"Value1",
+                "Value2":"Value2"
+            },
+            {
+                "Caption":"Caption2",
+                "Value":"Value2"
+            }
+        ]
+    },
+    "Section3":{
+        "SectionTitle":"Getting load through CBClassofNode",
+        "values":[
+            {
+                "Caption":"Caption1",
+                "Value":"Value1"
+            },
+            {
+                "Caption":"Caption2",
+                "Value":"Value2"
+            }
+        ]
+    },
+    "Section4":{
+        "SectionTitle":"Getting load through CBTypeofNode",
         "values":[
             {
                 "Caption":"Caption1",
@@ -48,6 +75,10 @@ finalData = {
         ]
     }
 }
+with open('test.cb') as f:
+    x = f.read()
+    cb = json.loads(x)
+    print(cb)
 # confibean1DATA = {
 #     "success": True,
 #     "jsFile": "confibean1",
@@ -148,7 +179,12 @@ def getData():
             msg = finalData
         else:
             msg = confibean1DATA
-        return msg
+        response = {
+        "success": True,
+        "data": msg,
+        "cb": cb
+    }
+        return response
 
 
 @app.route('/api/receiveJson', methods=['POST'])
@@ -158,10 +194,12 @@ def receiveJson():
         json.dump(data, f, indent=3)
 
     response = {
-        "success": True,
+        "success": True
     }
     return response
 
 
 if __name__ == "__main__":
     app.run(debug=True)
+
+
