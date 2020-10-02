@@ -1,15 +1,16 @@
 {
     "root":{
         "CBClassofNode":{
-            "CB":"cbClass1",
-            "ApplyTo":["$..Section3"]
+            "CBClass":"cbClass1",
+            "ApplyTo":["$..Section4"]
         },
         "CBTypeofNode":{
             "Type":"type1",
-            "ApplyTo":["$..Section4"]
+            "ApplyTo":["$..Section1..values[1]..Caption"]
         },
         "CBClassofType":{
-            "CB":"cbType1",
+            
+            "CBClass":"cbType1",
             "ApplyTo":["type1"]
         }
     }

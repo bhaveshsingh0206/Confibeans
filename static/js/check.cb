@@ -1,0 +1,10 @@
+export default class check {
+    constructor() {
+        
+    }
+    run(){
+        console.log("Its working")
+    }
+}
+t = check()
+t.run()

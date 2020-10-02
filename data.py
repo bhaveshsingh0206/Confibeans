@@ -20,6 +20,20 @@ data = {
 finalData = {
     "Section1":{
         "SectionTitle":"Getting load through inline cbd",
+        "Value":"avb",
+        "SubSection1":{
+            "SectionTitle":"Getting load through inline cbd",
+            "Value":"abc"
+        },
+        "cbd":{
+            "CBClass":"cbSection1"
+        }
+    }
+}
+
+finalDat = {
+    "Section1":{
+        "SectionTitle":"Getting load through inline cbd",
         "values":[
             {
                 "Caption":"Caption1",
@@ -31,7 +45,7 @@ finalData = {
             }
         ],
         "cbd":{
-            "cbname":"cbSection1"
+            "CBClass":"cbSection1"
         }
     },
     "Section2":{
@@ -46,7 +60,10 @@ finalData = {
                 "Caption":"Caption2",
                 "Value":"Value2"
             }
-        ]
+        ],
+        "cbd":{
+            "cbname":"cbSection2"
+        }
     },
     "Section3":{
         "SectionTitle":"Getting load through CBClassofNode",
@@ -59,7 +76,10 @@ finalData = {
                 "Caption":"Caption2",
                 "Value":"Value2"
             }
-        ]
+        ],
+        "cbd":{
+            "cbname":"cbSection3"
+        }
     },
     "Section4":{
         "SectionTitle":"Getting load through CBTypeofNode",
@@ -75,7 +95,7 @@ finalData = {
         ]
     }
 }
-with open('test.cb') as f:
+with open('test.cbd') as f:
     x = f.read()
     cb = json.loads(x)
     print(cb)

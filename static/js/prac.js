@@ -1,8 +1,5 @@
-export default class abc {
-  constructor(ok) {
-    this.ok = ok
-  }
-  load(){
-    console.log("ali is jpmc lol with mansi! ", this.ok)
-  }
-}
+// import dynamicClass  from './classes.js';
+// var obj = dynamicClass('check')
+// obj = new obj()
+// // console.log(obj)
+// obj.run()  

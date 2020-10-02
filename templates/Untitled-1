@@ -1,0 +1,25 @@
+{
+    "root":{
+        "Node1":{
+            "Path":"$..Section1":,
+            "CB":"cbSectoin1",
+            "Children":{
+                "Node11":{
+                    "Path":"$..Section1..SectionTitle",
+                    "CB":"CBText"
+                },
+                "Node12":{
+                    "Path":"$..Section1..values",
+                    "CB":"CBList"
+                    "Children":{
+                        "Node121":{
+                            "Path":
+                            "CB"
+                        },
+                        "Node122":{}
+                    }
+                }
+            }
+        }
+    }
+}
