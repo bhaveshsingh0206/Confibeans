@@ -4,17 +4,18 @@ export default class cbSection1 {
         this.DisAllowClasses = ["cbType1"]
 
         this.Lod = [
+            
             {
-                "First":"",
-                "FollowedBy":"",
-                "Placement":""
+                "First":"CBText",
+                "FollowedBy":"CBText",
+                "Placement":"Across"
             }
         ]
 
         this.Cmd = [
             {
-                "Outer":"",
-                "Nested":"",
+                "Outer":"CBText",
+                "Nested":"CBNode",
                 "Placement":""
             }
         ]

@@ -193,43 +193,180 @@ export default class CBContainers {
         this.cbd = cbd
         this.data = data
         this.restructure(data, "Node", "")
+        var t = this
+        setTimeout(function(){
+          t.Render()
+         }, 1000);
+        
         console.log(JSON.stringify(this.cbTree));
     }
-    Render (cbTree, prevobj){
-        keys = Object.keys(cbtree)
-        keys.forEach(key => {
-        
+    Render (){
+        var cbtree = this.cbTree["root"]
+        console.log(cbtree)
+        var keys = Object.keys(cbtree)
+        keys.forEach((key, j) => {
+          console.log(cbtree[key])
           var obj = dynamicClass(cbtree[key]["CB"])
+          console.log(obj)
           if (obj != null) {
             obj = new obj()
             var allowedClasses = obj.AllowClasses
             var disallowedClasses = obj.DisAllowClasses
+            var parentLayouts = obj.Lod
+            console.log(allowedClasses)
+            var parentNestedClasses = [] 
             if (cbtree[key].hasOwnProperty("Children")) {
-              var children = cbtree[key][children]
-              var childrenKeys = Object.keys(cbtree)
+              var children = cbtree[key]["Children"]
+              var childrenKeys = Object.keys(children)
               childrenKeys.forEach((childrenkey)=>{
                 if (allowedClasses.includes(children[childrenkey]["CB"]) || (allowedClasses.includes("All") && !disallowedClasses.includes(children[childrenkey]["CB"])) || !disallowedClasses.includes("All") ) {
                   if (children[childrenkey].hasOwnProperty("Children")) {
-
+                    parentNestedClasses.push(children[childrenkey]["CB"])
+                    
+                    var nestedNestedClasses = [] 
+                    var nestedObj = dynamicClass(children[childrenkey]["CB"])
+                    nestedObj = new nestedObj()
+                    var nestedObjAllowedClasses = nestedObj.AllowClasses
+                    var nestedObjDisallowedClasses = nestedObj.DisAllowClasses
+                    var nestedObjLayouts = nestedObj.Lod
+            
+                    
+                    var nestedChildren = children[childrenkey]["Children"]
+                    var nestedchildrenKeys = Object.keys(nestedChildren)
+                    nestedchildrenKeys.forEach((nestedKey)=>{
+                      if (nestedObjAllowedClasses.includes(nestedChildren[nestedKey]["CB"]) || (nestedObjAllowedClasses.includes("All") && !nestedObjDisallowedClasses.includes(nestedChildren[nestedKey]["CB"])) || !nestedObjDisallowedClasses.includes("All") ) {
+                        // ABhi explicitly CBTExt kia didnt check for further procedding.
+                        nestedNestedClasses.push(nestedChildren[nestedKey]["CB"])
+                        var leafobj = dynamicClass(nestedChildren[nestedKey]["CB"])
+                        if (leafobj != null) {
+                          leafobj = new leafobj()
+                          var placements = ""
+                          var style = ""
+                          var placeFound = false
+                          console.log("nestedNestedClasses ", nestedNestedClasses)
+                          for(var k=0;k<nestedObjLayouts.length;k++) {
+                            layout = nestedObjLayouts[k]
+                            console.log("layout ",layout )
+                            if (nestedNestedClasses.length == 1) {
+                                  if(nestedNestedClasses[0]===layout["FollowedBy"] && layout["First"]==="") {
+                                    placements = layout["Placement"]
+                                    console.log("placements ", placements)
+                                    placeFound = true
+                                    break
+                                  }
+                                } else {
+                                  console.log(nestedNestedClasses.indexOf(layout["First"]))
+                                  console.log(nestedNestedClasses.indexOf(layout["FollowedBy"]))
+                                  if (nestedNestedClasses.indexOf(layout["First"]) != -1 && nestedNestedClasses.indexOf(layout["FollowedBy"]) != -1 && Math.abs(nestedNestedClasses.indexOf(layout["FollowedBy"]) - nestedNestedClasses.indexOf(layout["First"]) == 0)){
+                                    placements = layout["Placement"]
+                                    placeFound = true
+                                    console.log("-------------------------------------")
+                                    console.log("placements ", placements)
+                                    break
+                                  }
+                                }
+                          }
+                          // nestedObjLayouts.forEach((layout, i)=>{
+                          //   if (nestedNestedClasses.length == 1) {
+                          //     if(nestedNestedClasses[0]===layout["FollowedBy"] && layout["First"]==="") {
+                          //       placements = layout["Placement"]
+                          //       // print("placements ", placements)
+                          //       placeFound = true
+                          //       // break
+                          //     }
+                          //   } else {
+                          //     if (nestedNestedClasses.indexOf(layout["First"]) != -1 && nestedNestedClasses.indexOf(layout["FollowedBy"]) != -1 && Math.abs(nestedNestedClasses.indexOf(layout["FollowedBy"]) - nestedNestedClasses.indexOf(layout["First"]) == 1)){
+                          //       placements = layout["Placement"]
+                          //       placeFound = true
+                          //       // print("placements ", placements)
+                          //       // break
+                          //     }
+                          //   }
+                          // })
+                          if (!placeFound) {
+                            placements = "default"
+                          } 
+                          
+                          style = leafobj.styles[placements]
+                          this.htmlContent += `<div class="${style}"><p>${jsonPath(this.data, nestedChildren[nestedKey]["Path"])[0]}</p></div>`
+                          console.log(this.htmlContent)
+                        }
+                        // 
+                      }
+                    })
                   } else {
                     // Leaf node in our case
+                    parentNestedClasses.push(children[childrenkey]["CB"])
                     var leafobj = dynamicClass(children[childrenkey]["CB"])
                     if (leafobj != null) {
                       leafobj = new leafobj()
+                      console.log(leafobj)
+                      var placements = ""
+                      var style = ""
+                      var placeFound = false
+                      for(var i=0;i<parentLayouts.length;i++) {
+                        var layout = parentLayouts[i]
+                        if (parentNestedClasses.length == 1) {
+                          if(parentNestedClasses[0]===layout["FollowedBy"] && layout["First"]==="") {
+                            placements = layout["Placement"]
+                            placeFound = true
+                            console.log("Parent placements ", placements)
+                            break
+                          }
+                        } else {
+                          if (parentNestedClasses.indexOf(layout["First"]) != -1 && parentNestedClasses.indexOf(layout["FollowedBy"]) != -1 && Math.abs(parentNestedClasses.indexOf(layout["FollowedBy"]) - parentNestedClasses.indexOf(layout["First"]) == 1)){
+                            placements = layout["Placement"]
+                            console.log("Parent placements ", placements)
+                            placeFound = true
+                            break
+                          }
+                        }
+                      }
+                      // parentLayouts.forEach((layout, i)=>{
+                      //   if (parentNestedClasses.length == 1) {
+                      //     if(parentNestedClasses[0]===layout["FollowedBy"] && layout["First"]==="") {
+                      //       placements = layout["Placement"]
+                      //       placeFound = true
+                      //       // print("placements ", placements)
+                      //       // break
+                      //     }
+                      //   } else {
+                      //     if (parentNestedClasses.indexOf(layout["First"]) != -1 && parentNestedClasses.indexOf(layout["FollowedBy"]) != -1 && Math.abs(parentNestedClasses.indexOf(layout["FollowedBy"]) - parentNestedClasses.indexOf(layout["First"]) == 1)){
+                      //       placements = layout["Placement"]
+                      //       // print("placements ", placements)
+                      //       placeFound = true
+                      //       // break
+                      //     }
+                      //   }
+                      // })
+                      if (!placeFound) {
+                        placements = "default"
+                      } 
+                      console.log(leafobj.styles)
+                      style = leafobj.styles[placements]
+                      this.htmlContent += `<div class="${style}"><p>${jsonPath(this.data, children[childrenkey]["Path"])[0]}</p></div>`
+                      console.log(this.htmlContent)
                     }
                     
                   }
-                } else {
-                  // main section1 k children nhi
-                }
+                } 
               })
               
+              
+            } else {
+              // main section1 k children nhi
             }
           }
             
-            
-            // obj.Load(data, cb)
+      
         });
+        var t = this
+        setTimeout(function(){
+          console.log("Rendering the tree")
+          console.log(t.htmlContent)
+          $("#data").append(t.htmlContent)
+         }, 1000);
+        
     }
 }
 

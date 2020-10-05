@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify, Response, render_template
 from flask_cors import CORS
 import json
-
+from collections import OrderedDict 
 app = Flask(__name__)
 CORS(app)
 with open('bshextractor.json') as f:
@@ -17,20 +17,20 @@ data = {
       },
     }
 }
-finalData = {
+finalData = OrderedDict({
     "Section1":{
-        "SectionTitle":"Getting load through inline cbd",
-        "Value":"avb",
-        "SubSection1":{
-            "SectionTitle":"Getting load through inline cbd",
-            "Value":"abc"
+        "SectionTitle":"Section 1 Title",
+        "Value":"Value 1 children of Section 1",
+        "ZubSection1":{
+            "SectionTitle":"SubSection1 Title",
+            "Value":"Value 1 children of ZubSection1"
         },
         "cbd":{
             "CBClass":"cbSection1"
         }
     }
-}
-
+})
+# print(finalData)
 finalDat = {
     "Section1":{
         "SectionTitle":"Getting load through inline cbd",
@@ -98,7 +98,7 @@ finalDat = {
 with open('test.cbd') as f:
     x = f.read()
     cb = json.loads(x)
-    print(cb)
+    # print(cb)
 # confibean1DATA = {
 #     "success": True,
 #     "jsFile": "confibean1",
@@ -191,19 +191,20 @@ def getData():
         jcb = json.load(g)
         dataType = request.get_json(force=True)['type']
         print(dataType)
-        if dataType == "PLTable":
-            msg = confibean2DATA
-        elif dataType == "data3":
-            msg = confibean3DATA
-        elif dataType == "sample":
-            msg = finalData
-        else:
-            msg = confibean1DATA
-        response = {
+        # if dataType == "PLTable":
+        #     msg = confibean2DATA
+        # elif dataType == "data3":
+        #     msg = confibean3DATA
+        # elif dataType == "sample":
+        #     msg = finalData
+        # else:
+        #     msg = confibean1DATA
+        response = OrderedDict({
         "success": True,
-        "data": msg,
+        "data": finalData,
         "cb": cb
-    }
+    })
+        print(response)
         return response
 
 

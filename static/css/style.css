@@ -1094,6 +1094,10 @@ pre code {
     flex: 0 0 8.333333%;
     max-width: 8.333333%;
   }
+  .left {
+    float: left;
+    color: #0b2e13;
+  }
   .col-md-2 {
     -ms-flex: 0 0 16.666667%;
     flex: 0 0 16.666667%;
