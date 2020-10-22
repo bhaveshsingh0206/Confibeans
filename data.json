@@ -1,56 +1,31 @@
-{"Section1":{
-   "SectionTitle":"Getting load through inline cbd",
-   "values":[
-       {
-           "Caption":"Caption1",
-           "Value":"Value1"
-       },
-       {
-           "Caption":"Caption2",                                
-           "Value":"Value2"
-       }
-   ],
-   "cbd":{
-       "cbname":"cbSection1"
-   }
-},
-"Section2":{
-   "SectionTitle":"Getting load through default classes",
-   "values":[
-       {
-           "Caption":"Caption1",
-           "Value1":"Value1",
-           "Value2":"Value2"
-       },
-       {
-           "Caption":"Caption2",
-           "Value":"Value2"
-       }
-   ]
-},
-"Section3":{
-   "SectionTitle":"Getting load through CBClassofNode",
-   "values":[
-       {
-           "Caption":"Caption1",
-           "Value":"Value1"
-       },
-       {
-           "Caption":"Caption2",
-           "Value":"Value2"
-       }
-   ]
-},
-"Section4":{
-   "SectionTitle":"Getting load through CBTypeofNode",
-   "values":[
-       {
-           "Caption":"Caption1",
-           "Value":"Value1"
-       },
-       {
-           "Caption":"Caption2",
-           "Value":"Value2"
-       }
-   ]
-}}
+{
+    "cbCVSection": {
+        "SectionTitle": "Section1",
+        "cbd": {
+            "CBClass": "cbCVSection"
+        },
+        "CaptionValues": [
+            {
+                "Caption": "Caption1",
+                "Value": "Value1",
+                "cbd": {
+                    "CBClass": "cbCapVal"
+                }
+            },
+            {
+                "Caption": "Caption2",
+                "Value": "Value2",
+                "cbd": {
+                    "CBClass": "cbCapVal"
+                }
+            },
+            {
+                "Caption": "Caption2",
+                "Value": "Value2",
+                "cbd": {
+                    "CBClass": "cbCapVal"
+                }
+            }
+        ]
+    }
+}

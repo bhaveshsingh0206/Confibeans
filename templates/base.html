@@ -9,46 +9,40 @@
     <meta http-equiv="x-ua-compatible" content="ie=edge" />
     <title>{% block title %}{% endblock %}</title>
     <!-- Font Awesome -->
-    
+
     <link
       rel="stylesheet"
       href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
       integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN"
       crossorigin="anonymous"
     />
-    <!-- Bootstrap core CSS -->
-    <link rel="stylesheet" href="./static/css/bootstrap/bootstrap.css" />
     <link rel="stylesheet" href="./static/css/s.css" />
     <!-- <link rel="stylesheet" href="./static/css/style.css" /> -->
   </head>
   <body>
     <!-- Main layout -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-      <a class="navbar-brand" href="#">
-        <font color="white">Cerelabs</font>
-      </a>
+
+    <nav>
+      <div class="nav-container">
+        <div class="logo">Cerelabs</div>
+      </div>
     </nav>
-    <div id="demo">
-    </div>
-    <div class="container margin">
-      <div class="col-md-12 text-center">
-        <br>
-        <button
-          type="button"
-          class="btn btn-outline-danger btn-md center"
-          id="get"
-        >
-          Get Data
-        </button>
-        <br>
-        <br>
-        <div id="data">
-          
-        </div>
+
+    <div class="containter">
+      <div class="btn-div">
+        <button id="get">Get Data</button>
+      </div>
+      <div class="container-data" id="data">
+        <!-- <div>
+          <div class="title">Child 1</div>
+          <div class="across">Child 2</div>
+          <div class="indent">
+            <div class="default">Grandchild 1</div>
+            <div class="across">Grandchild 2</div>
+          </div>
+        </div> -->
       </div>
     </div>
-
-
     <!-- Main layout -->
 
     <!-- SCRIPTS -->
@@ -72,15 +66,15 @@
       src="{{ url_for('static', filename='js/prac.js') }}"
     ></script>
     <script
-    type="module"
+      type="module"
       src="{{ url_for('static', filename='js/tp.js') }}"
     ></script>
     <script
-    type="module"
+      type="module"
       src="{{ url_for('static', filename='js/cbList.js') }}"
     ></script>
     <script
-    type="module"
+      type="module"
       src="{{ url_for('static', filename='js/classes.js') }}"
     ></script>
     <script
@@ -88,15 +82,15 @@
       src="{{ url_for('static', filename='js/jsonpath.js') }}"
     ></script>
     <script
-    type="module"
+      type="module"
       src="{{ url_for('static', filename='js/CBText.js') }}"
     ></script>
     <script
-    type="module"
+      type="module"
       src="{{ url_for('static', filename='js/CBNode.js') }}"
     ></script>
     <script
-    type="module"
+      type="module"
       src="{{ url_for('static', filename='js/cbSection1.js') }}"
     ></script>
     <script
@@ -108,7 +102,7 @@
       src="{{ url_for('static', filename='js/check.cb') }}"
     ></script> -->
     <script
-    type="module"
+      type="module"
       src="{{ url_for('static', filename='js/CBContainers.js') }}"
     ></script>
     <!-- <script

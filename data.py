@@ -1,100 +1,109 @@
 from flask import Flask, request, jsonify, Response, render_template
 from flask_cors import CORS
 import json
-from collections import OrderedDict 
+from collections import OrderedDict
 app = Flask(__name__)
 CORS(app)
-with open('bshextractor.json') as f:
-    confibean3DATA = json.load(f)
-
-data = {
-    "DataElement1": {
-      "DataElement11": "DE11-V1",
-      "DataElement12": "DE12-V2",
-      "DataElement13": {
-        "DataElement131": "DE131-V1",
-        "DataElement132": "DE132-V2",
-      },
-    }
-}
-finalData = OrderedDict({
-    "Section1":{
-        "SectionTitle":"Section 1 Title",
-        "Value":"Value 1 children of Section 1",
-        "ZubSection1":{
-            "SectionTitle":"SubSection1 Title",
-            "Value":"Value 1 children of ZubSection1"
-        },
-        "cbd":{
-            "CBClass":"cbSection1"
-        }
-    }
-})
-# print(finalData)
-finalDat = {
-    "Section1":{
-        "SectionTitle":"Getting load through inline cbd",
-        "values":[
-            {
-                "Caption":"Caption1",
-                "Value":"Value1"
-            },
-            {
-                "Caption":"Caption2",
-                "Value":"Value2"
-            }
-        ],
-        "cbd":{
-            "CBClass":"cbSection1"
-        }
-    },
-    "Section2":{
-        "SectionTitle":"Getting load through default classes",
-        "values":[
-            {
-                "Caption":"Caption1",
-                "Value1":"Value1",
-                "Value2":"Value2"
-            },
-            {
-                "Caption":"Caption2",
-                "Value":"Value2"
-            }
-        ],
-        "cbd":{
-            "cbname":"cbSection2"
-        }
-    },
-    "Section3":{
-        "SectionTitle":"Getting load through CBClassofNode",
-        "values":[
-            {
-                "Caption":"Caption1",
-                "Value":"Value1"
-            },
-            {
-                "Caption":"Caption2",
-                "Value":"Value2"
-            }
-        ],
-        "cbd":{
-            "cbname":"cbSection3"
-        }
-    },
-    "Section4":{
-        "SectionTitle":"Getting load through CBTypeofNode",
-        "values":[
-            {
-                "Caption":"Caption1",
-                "Value":"Value1"
-            },
-            {
-                "Caption":"Caption2",
-                "Value":"Value2"
-            }
-        ]
-    }
-}
+with open('data.json') as f:
+    DATA = json.load(f)
+print(DATA)
+# data = {
+#     "DataElement1": {
+#         "DataElement11": "DE11-V1",
+#         "DataElement12": "DE12-V2",
+#         "DataElement13": {
+#             "DataElement131": "DE131-V1",
+#             "DataElement132": "DE132-V2",
+#         },
+#     }
+# }
+# finalData = OrderedDict({
+#     "Section1": {
+#         "SectionTitle": "Section 1 Title",
+#         "Value": "Value 1 children of Section 1",
+#         "XubSection1": {
+#             "SectionTitle": "SubSection1 Title",
+#             "Value": "Value 1 children of ZubSection1"
+#         },
+#         "YataElement1": {
+#             "DataElement11": "DE11-V1",
+#             "DataElement12": "DE12-V2",
+#             "DataElement13": {
+#                 "DataElement131": "DE131-V1",
+#                 "DataElement132": "DE132-V2",
+#             },
+#         },
+#         "ZectionEnd": "Section 1 End",
+#         "cbd": {
+#             "CBClass": "cbSection1"
+#         }
+#     },
+# })
+# # print(finalData)
+# finalDat = {
+#     "Section1": {
+#         "SectionTitle": "Getting load through inline cbd",
+#         "values": [
+#             {
+#                 "Caption": "Caption1",
+#                 "Value": "Value1"
+#             },
+#             {
+#                 "Caption": "Caption2",
+#                 "Value": "Value2"
+#             }
+#         ],
+#         "cbd": {
+#             "CBClass": "cbSection1"
+#         }
+#     },
+#     "Section2": {
+#         "SectionTitle": "Getting load through default classes",
+#         "values": [
+#             {
+#                 "Caption": "Caption1",
+#                 "Value1": "Value1",
+#                 "Value2": "Value2"
+#             },
+#             {
+#                 "Caption": "Caption2",
+#                 "Value": "Value2"
+#             }
+#         ],
+#         "cbd": {
+#             "cbname": "cbSection2"
+#         }
+#     },
+#     "Section3": {
+#         "SectionTitle": "Getting load through CBClassofNode",
+#         "values": [
+#             {
+#                 "Caption": "Caption1",
+#                 "Value": "Value1"
+#             },
+#             {
+#                 "Caption": "Caption2",
+#                 "Value": "Value2"
+#             }
+#         ],
+#         "cbd": {
+#             "cbname": "cbSection3"
+#         }
+#     },
+#     "Section4": {
+#         "SectionTitle": "Getting load through CBTypeofNode",
+#         "values": [
+#             {
+#                 "Caption": "Caption1",
+#                 "Value": "Value1"
+#             },
+#             {
+#                 "Caption": "Caption2",
+#                 "Value": "Value2"
+#             }
+#         ]
+#     }
+# }
 with open('test.cbd') as f:
     x = f.read()
     cb = json.loads(x)
@@ -200,10 +209,10 @@ def getData():
         # else:
         #     msg = confibean1DATA
         response = OrderedDict({
-        "success": True,
-        "data": finalData,
-        "cb": cb
-    })
+            "success": True,
+            "data": DATA,
+            "cb": cb
+        })
         print(response)
         return response
 
@@ -222,5 +231,3 @@ def receiveJson():
 
 if __name__ == "__main__":
     app.run(debug=True)
-
-
