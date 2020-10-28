@@ -43,43 +43,36 @@ export default class CBContainers {
       }
     }
   }
-  checkInParent(path, type, parent, children) {
-    console.log(typeof(parent))
-    console.log("Parent ",parent)
-    console.log("Children ",children)
-    // var obj = dynamicClass(parent["CB"]);
-    // obj = new obj();
-    // var CBClassofKeys = obj.CBClassofKeys
-    // if (CBClassofKeys) {
-    //   for (var i=0;i<CBClassofKeys.length;i++) {
-    //     var temp = CBClassofKeys[i]
-    //     var keys = temp["ApplyTo"]
-    //     for(var j=0;j<keys.length;j++) {
-    //       if (keys[j]==children) {
-    //         this.newNode(path, type, parent=null, temp["CB"])
-    //         break
-    //       }
-    //     }
-    //   }
-    // }
+  checkInParent(parent, children) {
+    var obj = dynamicClass(parent["CB"]);
+    obj = new obj();
+    var CBClassofKeys = obj.CBClassofKeys
+    if (CBClassofKeys) {
+      for (var i=0;i<CBClassofKeys.length;i++) {
+        var temp = CBClassofKeys[i]
+        var keys = temp["ApplyTo"]
+        for(var j=0;j<keys.length;j++) {
+          if (keys[j]==children) {
+            return temp["CB"];
+          }
+        }
+      }
+      return null;
+    }
     
   }
   newNode(path, type, parent=null, iscb=null) {
-
     var node = {};
+    var children = path.split("..");
+    var cbd =null;
+    children = children[children.length-1]
     if (iscb) {
       node["Path"] = "$" + path;
       node["CB"] = iscb;
-      if (type=="Object"||type=="Array")
-        node["Children"] = {};
-    } else if(parent) {
-      var children = path.split("..")
-      children = children[children.length-1]
-      this.checkInParent(path, type, parent, children)
+      node["Children"] = {};
     }
-      else {
+    else {
       var cbClass = this.checkInCBD("$" + path, this.cbd);
-      // console.log(cbClass);
       if (cbClass != null) {
         if (type == "Object") {
           node["Path"] = "$" + path;
@@ -94,40 +87,37 @@ export default class CBContainers {
           node["CB"] = cbClass;
         }
       } else {
+        if(parent["CB"]){
+          cbd = this.checkInParent(parent, children);
+        }
         if (type == "Object") {
           node["Path"] = "$" + path;
-          node["CB"] = "CBNode";
+          cbd==null ? node["CB"] = "CBNode": node["CB"] = cbd;
           node["Children"] = {};
         } else if (type == "Array") {
           node["Path"] = "$" + path;
-          node["CB"] = "CBList";
+          cbd==null ? node["CB"] = "CBList": node["CB"] = cbd;
           node["Children"] = {};
         } else {
           node["Path"] = "$" + path;
-          node["CB"] = "CBText";
+          cbd==null ? node["CB"] = "CBText": node["CB"] = cbd;
         }
       }
     }
     return node;
   }
    setObj(obj, query, name, prop, type, exist) {
-    console.log("obj ",obj)
     var node;
     for (var key in obj) {
       var value = obj[key];
-  
       if (key === query) {
         if(exist!=null){
           node = exist;
         }
         else{
-          console.log("obj[key] purana se parent aaya")
-          // console.log("Key ", key)
-          console.log(obj)
-          node = this.newNode(prop, type, obj, null);
+            node = this.newNode(prop, type, obj[key], null);
         }
         obj[key]["Children"][name] = node;
-        // console.log("CHILDREN", obj[key]["Children"]);
       }
   
       if (typeof value === "object") {
@@ -136,119 +126,127 @@ export default class CBContainers {
     }
   }
   restructure(obj, newName, path, array) {
+    // y is for labelling node name
     var y = 1;
+    //Name is current node name
     var Name = null;
+    // type of node
     var type = null;
     var elementName = null;
     if (array == true) {
+      //if it enters then we are in child elements of array
+      // traversing array
       for (var i = 1; i < obj.length + 1; i++) {
         y = 1;
+        // newname is name of parent node
         Name = newName + i;
+        //naming each array element using pathmain
         var pathMain = path + "[" + (i - 1) + "]";
+        //if an element is an object it enters here
         if (typeof obj[i - 1] == "object") {
           type = "Object";
-          this.setObj(this.cbTree, newName, Name, pathMain, type);
-          // console.log(typeof obj[i - 1]);
+          this.setObj(this.cbTree, newName, Name, pathMain, type, null);
+          // if cbd exists in this element we set CB of node based on CBClass
           if (obj[i-1].hasOwnProperty("cbd")) {
-            // console.log("cbd",obj[i-1][prop]["cbd"]["CB"] )
             elementName = Name + y;
             type = "Object";
             var path_obj = pathMain;
-            // console.log("BHAVESH", obj[i-1]["cbd"]["CBClass"])
+            //create custom node and send it to setobj function
             node = this.newNode(pathMain, type, null,obj[i-1]["cbd"]["CBClass"]);
             this.setObj(this.cbTree, newName, Name, path_obj, type, node);
-            // restructure(obj[i-1][prop], Name, path_obj);
           }
+          // traversing through the child_elements of the object element
           for (var prop in obj[i - 1]) {
             if (typeof obj[i - 1][prop] == "object") {
+              //if child_element is an array recursively call same function
               if (Array.isArray(obj[prop])) {
-                //leaf nodes
                 elementName = Name + y;
                 type = "Array";
                 var path_obj = pathMain + ".." + prop;
-                this.setObj(this.cbTree, Name, elementName, path_obj, type);
+                this.setObj(this.cbTree, Name, elementName, path_obj, type, null);
                 this.restructure(obj[i - 1][prop], elementName, path_obj, true);
               } else {
+                // set all nodes except the cbd node in cbtree
                 if (prop != "cbd") {
                   elementName = Name + y;
                   type = "Object";
                   path_obj = pathMain + ".." + prop;
-                  this.setObj(this.cbTree, Name, elementName, path_obj, type);
+                  this.setObj(this.cbTree, Name, elementName, path_obj, type, null);
                   this.restructure(obj[[i - 1]][prop], elementName, path_obj, false);
-                } else y--;
+                } else y--; // reduce y for correct naming pattern
               }
             } else {
-              //leaf nodes
-              // console.log("PROP",prop);
+              // if child_element is leaf node
               elementName = Name + y;
-              // console.log("ENAME",elementName)
               type = "";
               var path_leaf = pathMain + ".." + prop;
-              // console.log(path_leaf);
-              // console.log(JSON.stringify(cbTree));
-              this.setObj(this.cbTree, Name, elementName, path_leaf, type);
+              this.setObj(this.cbTree, Name, elementName, path_leaf, type, null);
             }
-            y++;
+            y++; // after each iteration increase y for node naming
           }
         } else {
+          // if element is leaf node
           elementName = Name + y;
           type = "";
           var path_leaf = path + ".." + prop;
-          this.setObj(this.cbTree, Name, elementName, path_leaf, type);
+          this.setObj(this.cbTree, Name, elementName, path_leaf, type, null);
           y++;
         }
       }
+      // once all elements are traversed through for loop setting array back to false
       array = false;
     } else {
+      // traversing through the object
       for (var prop in obj) {
         if (typeof obj[prop] == "object") {
-          // object
+          // if element is an object
           if (
             (Name == null || Name == "Node" + (this.z - 1)) &&
             prop != "cbd" &&
             !Array.isArray(obj[prop])
           ) {
+            // enters this ONLY for primary first layer nodes eg Node1,Node2,Node3 etc...
             Name = newName;
-            Name = Name + this.z;
+            Name = Name + this.z; // z is for naming primary nodes eg z=1 for Node1, z=2 for Node2 etc...
             type = "Object";
-            // console.log(prop);
             if (obj[prop]["cbd"]) {
+              // if primary Nodes contain cbd set CB to CBClass
               var path_obj = path + ".." + prop;
-              // console.log("BHAVESH", obj[prop]["cbd"]["CBClass"])
+              //create custom node and send it to setobj function
               node = this.newNode(".." + prop,type,null,obj[prop]["cbd"]["CBClass"]);
             } else {
+              // else set CBNode
               var path_obj = path + ".." + prop;
-              console.log("obj se parent aaya")
               node = this.newNode(".." + prop, type, obj, null);
             }
-            this.cbTree.root[Name] = node;
-            this.restructure(obj[prop], Name, path_obj);
+            this.cbTree.root[Name] = node; // set this node in root
+            this.restructure(obj[prop], Name, path_obj); // recursive call to traverse primary nodes, NO array parameter here
             this.z++;
           } else if (Array.isArray(obj[prop])) {
-            //leaf nodes
+            //if array object
             Name = newName + y;
             type = "Array";
             var path_leaf = path + ".." + prop;
-            this.setObj(this.cbTree, newName, Name, path_leaf, type);
+            //set node 
+            this.setObj(this.cbTree, newName, Name, path_leaf, type, null);
+            //recursive call by setting array parameter as TRUE for traversing array elements
             this.restructure(obj[prop], Name, path_leaf, true);
           } else if(obj[prop]["cbd"]){
-            // console.log(obj[prop]["cbd"]);
+            // if normal nodes contain cbd set CB to CBClass
             var path_obj = path + ".." + prop;
             Name = newName + y;
             type = "Object";
-            // console.log("BHAVESH", obj[prop]["cbd"]["CBClass"])
+            //create custom node and send it to setobj function
             var node = this.newNode(".." + prop, type, null, obj[prop]["cbd"]["CBClass"]);
-            // console.log("name",Name);
-            // console.log("mynode",node);
             this.setObj(this.cbTree, newName, Name, path_obj, type, node);
             this.restructure(obj[prop], Name, path_obj);
           }else {
+            // set all nodes and skip if cbd appears
             if (prop != "cbd") {
               Name = newName + y;
-              // console.log(Name);
               type = "Object";
               path_obj = path + ".." + prop;
-              this.setObj(this.cbTree, newName, Name, path_obj, type);
+              this.setObj(this.cbTree, newName, Name, path_obj, type, null);
               this.restructure(obj[prop], Name, path_obj);
             } else {
               y--;
@@ -259,45 +257,18 @@ export default class CBContainers {
           Name = newName + y;
           type = "";
           var path_leaf = path + ".." + prop;
-          this.setObj(this.cbTree, newName, Name, path_leaf, type);
+          this.setObj(this.cbTree, newName, Name, path_leaf, type, null,null);
         }
         y++;
       }
     }
   }
-  tpFunction(cbtree) {
-    
-    var keys = Object.keys(cbtree);
-    keys.forEach((key) => {
-      if (cbtree[key]["Children"]) {
-        
-        if (cbtree[key]["CB"] != "cbCapVal") {
-          this.tpFunction(cbtree[key]["Children"])
-        } else {
-          // console.log(cbtree[key]["Children"])
-          keys = Object.keys(cbtree[key]["Children"])
-
-          keys.forEach((k)=>{
-            var obj = cbtree[key]["Children"][k]
-            var temp = obj["Path"].split("..")
-            if (temp[temp.length-1] == "Value") {
-              obj["CB"] = "CBInput"
-            }
-          })
-          
-        }
-        
-        
-      } 
-      
-    })
-  }
+ 
   Parse(data, cbd) {
     this.cbd = cbd;
     this.data = data;
     this.restructure(data, "Node", "");
     var t = this;
-    this.tpFunction(this.cbTree["root"])
     setTimeout(function () {
       
       console.log(JSON.stringify(t.cbTree));
@@ -309,17 +280,13 @@ export default class CBContainers {
 
 
   Render(cbtree, parent) {
-    // console.log("Please die")
     var across = false;
     var render = true;
     var keys = Object.keys(cbtree);
     var parentNestedClasses = [];
     keys.forEach((key, j) => {
-      // console.log("first cbtree[key]", cbtree[key]);
       if (parent != null) {
         var obj = dynamicClass(parent["CB"]);
-        // console.log("myobj");
-        // console.log(cbtree[key]["CB"]);
         obj = new obj();
         // console.log(obj)
         var allowedClasses = obj.AllowClasses;
@@ -330,14 +297,12 @@ export default class CBContainers {
         var style = "";
         render = false;
       }
-      // console.log("ok girls ",allowedClasses);
-      // console.log("come on", cbtree[key]);
+      
 
       if (cbtree[key].hasOwnProperty("Children")) {
         var children = cbtree[key]["Children"];
         if (parent != null) {
-          // console.log("Parent", parent["CB"]);
-          // console.log("Childref", cbtree[key]["CB"]);
+          
 
           if (
             allowedClasses.includes(cbtree[key]["CB"]) ||
@@ -361,12 +326,10 @@ export default class CBContainers {
             }
           }
           this.htmlContent += `<div class="${newStyle}">`;
-          // console.log("RECURSING");
           this.Render(children, cbtree[key]);
           this.htmlContent += `</div>`;
         } else {
           this.htmlContent += `<div>`;
-          // console.log("RECURSING");
           this.Render(children, cbtree[key]);
           this.htmlContent += `</div>`;
         }
@@ -411,16 +374,12 @@ export default class CBContainers {
                 break;
               }
             } else {
-              // console.log(parentNestedClasses.indexOf(layout["First"]));
-              // console.log(parentNestedClasses.indexOf(layout["FollowedBy"]));
               if (
                 parentNestedClasses[len - 1] === layout["FollowedBy"] &&
                 layout["First"] === parentNestedClasses[len - 2]
               ) {
                 placements = layout["Placement"];
                 placeFound = true;
-                // console.log("-------------------------------------");
-                // console.log("placements ", placements);
                 break;
               }
             }
@@ -464,8 +423,6 @@ export default class CBContainers {
     if (render) {
       var t = this;
       setTimeout(function () {
-        // console.log("Rendering the tree");
-        // console.log(t.htmlContent);
         $("#data").append(t.htmlContent);
       }, 1000);
     }
