@@ -43,13 +43,41 @@ export default class CBContainers {
       }
     }
   }
-  newNode(path, type, iscb) {
+  checkInParent(path, type, parent, children) {
+    console.log(typeof(parent))
+    console.log("Parent ",parent)
+    console.log("Children ",children)
+    // var obj = dynamicClass(parent["CB"]);
+    // obj = new obj();
+    // var CBClassofKeys = obj.CBClassofKeys
+    // if (CBClassofKeys) {
+    //   for (var i=0;i<CBClassofKeys.length;i++) {
+    //     var temp = CBClassofKeys[i]
+    //     var keys = temp["ApplyTo"]
+    //     for(var j=0;j<keys.length;j++) {
+    //       if (keys[j]==children) {
+    //         this.newNode(path, type, parent=null, temp["CB"])
+    //         break
+    //       }
+    //     }
+    //   }
+    // }
+    
+  }
+  newNode(path, type, parent=null, iscb=null) {
+
     var node = {};
     if (iscb) {
       node["Path"] = "$" + path;
       node["CB"] = iscb;
-      node["Children"] = {};
-    } else {
+      if (type=="Object"||type=="Array")
+        node["Children"] = {};
+    } else if(parent) {
+      var children = path.split("..")
+      children = children[children.length-1]
+      this.checkInParent(path, type, parent, children)
+    }
+      else {
       var cbClass = this.checkInCBD("$" + path, this.cbd);
       // console.log(cbClass);
       if (cbClass != null) {
@@ -83,6 +111,7 @@ export default class CBContainers {
     return node;
   }
    setObj(obj, query, name, prop, type, exist) {
+    console.log("obj ",obj)
     var node;
     for (var key in obj) {
       var value = obj[key];
@@ -92,10 +121,13 @@ export default class CBContainers {
           node = exist;
         }
         else{
-          node = this.newNode(prop, type);
+          console.log("obj[key] purana se parent aaya")
+          // console.log("Key ", key)
+          console.log(obj)
+          node = this.newNode(prop, type, obj, null);
         }
         obj[key]["Children"][name] = node;
-        console.log("CHILDREN", obj[key]["Children"]);
+        // console.log("CHILDREN", obj[key]["Children"]);
       }
   
       if (typeof value === "object") {
@@ -116,14 +148,14 @@ export default class CBContainers {
         if (typeof obj[i - 1] == "object") {
           type = "Object";
           this.setObj(this.cbTree, newName, Name, pathMain, type);
-          console.log(typeof obj[i - 1]);
+          // console.log(typeof obj[i - 1]);
           if (obj[i-1].hasOwnProperty("cbd")) {
             // console.log("cbd",obj[i-1][prop]["cbd"]["CB"] )
             elementName = Name + y;
             type = "Object";
             var path_obj = pathMain;
-            console.log("BHAVESH", obj[i-1]["cbd"]["CBClass"])
-            node = this.newNode(pathMain, type, obj[i-1]["cbd"]["CBClass"]);
+            // console.log("BHAVESH", obj[i-1]["cbd"]["CBClass"])
+            node = this.newNode(pathMain, type, null,obj[i-1]["cbd"]["CBClass"]);
             this.setObj(this.cbTree, newName, Name, path_obj, type, node);
             // restructure(obj[i-1][prop], Name, path_obj);
           }
@@ -147,9 +179,9 @@ export default class CBContainers {
               }
             } else {
               //leaf nodes
-              console.log("PROP",prop);
+              // console.log("PROP",prop);
               elementName = Name + y;
-              console.log("ENAME",elementName)
+              // console.log("ENAME",elementName)
               type = "";
               var path_leaf = pathMain + ".." + prop;
               // console.log(path_leaf);
@@ -179,14 +211,15 @@ export default class CBContainers {
             Name = newName;
             Name = Name + this.z;
             type = "Object";
-            console.log(prop);
+            // console.log(prop);
             if (obj[prop]["cbd"]) {
               var path_obj = path + ".." + prop;
-              console.log("BHAVESH", obj[prop]["cbd"]["CBClass"])
-              node = this.newNode(".." + prop, type, obj[prop]["cbd"]["CBClass"]);
+              // console.log("BHAVESH", obj[prop]["cbd"]["CBClass"])
+              node = this.newNode(".." + prop,type,null,obj[prop]["cbd"]["CBClass"]);
             } else {
               var path_obj = path + ".." + prop;
-              node = this.newNode(".." + prop, type);
+              console.log("obj se parent aaya")
+              node = this.newNode(".." + prop, type, obj, null);
             }
             this.cbTree.root[Name] = node;
             this.restructure(obj[prop], Name, path_obj);
@@ -199,14 +232,14 @@ export default class CBContainers {
             this.setObj(this.cbTree, newName, Name, path_leaf, type);
             this.restructure(obj[prop], Name, path_leaf, true);
           } else if(obj[prop]["cbd"]){
-            console.log(obj[prop]["cbd"]);
+            // console.log(obj[prop]["cbd"]);
             var path_obj = path + ".." + prop;
             Name = newName + y;
             type = "Object";
-            console.log("BHAVESH", obj[prop]["cbd"]["CBClass"])
-            var node = this.newNode(".." + prop, type, obj[prop]["cbd"]["CBClass"]);
-            console.log("name",Name);
-            console.log("mynode",node);
+            // console.log("BHAVESH", obj[prop]["cbd"]["CBClass"])
+            var node = this.newNode(".." + prop, type, null, obj[prop]["cbd"]["CBClass"]);
+            // console.log("name",Name);
+            // console.log("mynode",node);
             this.setObj(this.cbTree, newName, Name, path_obj, type, node);
             this.restructure(obj[prop], Name, path_obj);
           }else {
@@ -232,17 +265,51 @@ export default class CBContainers {
       }
     }
   }
+  tpFunction(cbtree) {
+    
+    var keys = Object.keys(cbtree);
+    keys.forEach((key) => {
+      if (cbtree[key]["Children"]) {
+        
+        if (cbtree[key]["CB"] != "cbCapVal") {
+          this.tpFunction(cbtree[key]["Children"])
+        } else {
+          // console.log(cbtree[key]["Children"])
+          keys = Object.keys(cbtree[key]["Children"])
+
+          keys.forEach((k)=>{
+            var obj = cbtree[key]["Children"][k]
+            var temp = obj["Path"].split("..")
+            if (temp[temp.length-1] == "Value") {
+              obj["CB"] = "CBInput"
+            }
+          })
+          
+        }
+        
+        
+      } 
+      
+    })
+  }
   Parse(data, cbd) {
     this.cbd = cbd;
     this.data = data;
     this.restructure(data, "Node", "");
     var t = this;
+    this.tpFunction(this.cbTree["root"])
     setTimeout(function () {
+      
       console.log(JSON.stringify(t.cbTree));
+
       t.Render(t.cbTree["root"], null);
     }, 1000);
   }
+
+
+
   Render(cbtree, parent) {
+    // console.log("Please die")
     var across = false;
     var render = true;
     var keys = Object.keys(cbtree);
@@ -254,6 +321,7 @@ export default class CBContainers {
         // console.log("myobj");
         // console.log(cbtree[key]["CB"]);
         obj = new obj();
+        // console.log(obj)
         var allowedClasses = obj.AllowClasses;
         var disallowedClasses = obj.DisAllowClasses;
         var parentLayouts = obj.Lod;
@@ -262,14 +330,15 @@ export default class CBContainers {
         var style = "";
         render = false;
       }
-      // console.log(allowedClasses);
+      // console.log("ok girls ",allowedClasses);
       // console.log("come on", cbtree[key]);
 
       if (cbtree[key].hasOwnProperty("Children")) {
         var children = cbtree[key]["Children"];
         if (parent != null) {
-          console.log("Parent", parent["CB"]);
-          console.log("Childref", cbtree[key]["CB"]);
+          // console.log("Parent", parent["CB"]);
+          // console.log("Childref", cbtree[key]["CB"]);
+
           if (
             allowedClasses.includes(cbtree[key]["CB"]) ||
             (allowedClasses.includes("All") &&
@@ -292,12 +361,12 @@ export default class CBContainers {
             }
           }
           this.htmlContent += `<div class="${newStyle}">`;
-          console.log("RECURSING");
+          // console.log("RECURSING");
           this.Render(children, cbtree[key]);
           this.htmlContent += `</div>`;
         } else {
           this.htmlContent += `<div>`;
-          console.log("RECURSING");
+          // console.log("RECURSING");
           this.Render(children, cbtree[key]);
           this.htmlContent += `</div>`;
         }
@@ -318,23 +387,12 @@ export default class CBContainers {
           var len = parentNestedClasses.length;
           for (var k = 0; k < parentLayouts.length; k++) {
             layout = parentLayouts[k];
-            // console.log("layout ", layout);
-            // console.log("parentNestedClasses ", parentNestedClasses);
-            // checking accross
-            // console.log("k", k);
-            // console.log("layout", layout);
-            // console.log("keys", keys);
-            // console.log("j", j);
             if (keys.length > j + 1) {
-              // console.log("ENTERED BOIS");
-              // // console.log("layout", layout["First"]);
-              // console.log("CB", parentNestedClasses[len - 1]);
               if (
                 cbtree[keys[j + 1]]["CB"] === layout["FollowedBy"] &&
                 layout["First"] === parentNestedClasses[len - 1]
               ) {
                 placements = layout["Placement"];
-                // console.log("placementsZZZ ", placements);
                 if (placements == "Across") across = true;
               }
             }
@@ -370,22 +428,33 @@ export default class CBContainers {
           if (!placeFound) {
             placements = "Default";
           }
-          if (cbtree[key]["CB"] == "CBText") {
-            // console.log("Entered");
-            // console.log(cbtree[key]);
+          if (cbtree[key]["CB"] == "CBText" || cbtree[key]["CB"] == "CBInput") {
+            
             var leafobj = dynamicClass(cbtree[key]["CB"]);
             leafobj = new leafobj();
             // console.log(typeof leafobj);
             style = leafobj.styles;
             internalStyle = this.styles[placements];
-            if (across)
-              this.htmlContent += `<div class="${style} ${internalStyle} across"><p>${
+            if (cbtree[key]["CB"] == "CBText") {
+              if (across)
+              this.htmlContent += `<div class="${style}  across"><p class="${internalStyle}">${
                 jsonPath(this.data, cbtree[key]["Path"])[0]
               }</p></div>`;
             else
-              this.htmlContent += `<div class="${style} ${internalStyle}"><p>${
+              this.htmlContent += `<div class="${style}"><p class="${internalStyle}">${
                 jsonPath(this.data, cbtree[key]["Path"])[0]
               }</p></div>`;
+            } else {
+              if (across)
+              this.htmlContent += `<div class="${style} ${internalStyle} across"><input type="text" class="${internalStyle}" value="${
+                jsonPath(this.data, cbtree[key]["Path"])[0]
+              }"></input></div>`;
+            else
+              this.htmlContent += `<div class="${style} ${internalStyle}"><input type="text" class="${internalStyle}" value="${
+                jsonPath(this.data, cbtree[key]["Path"])[0]
+              }"></input></div>`;
+            }
+            
             // console.log(this.htmlContent);
           }
           across = false;
@@ -395,8 +464,8 @@ export default class CBContainers {
     if (render) {
       var t = this;
       setTimeout(function () {
-        console.log("Rendering the tree");
-        console.log(t.htmlContent);
+        // console.log("Rendering the tree");
+        // console.log(t.htmlContent);
         $("#data").append(t.htmlContent);
       }, 1000);
     }

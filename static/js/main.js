@@ -78,18 +78,12 @@ function getDataContainer() {
              type: "sample",
           }),
           success: function(response) {
-            console.log(JSON.stringify(response))
             var data = response["data"]
             // console.log(JSON.stringify(data))
             var cbd = response["cb"]
             // console.log("cbd ", cbd)
             var obj = new CBContainers(data, cbd)
-            obj.Parse(data, cbd)
-            // obj.Render()
-            // var obj = dynamicClass('CBContainer')
-            // obj = new obj()
-            
-            // obj.Load(data, cb)                   
+            obj.Parse(data, cbd)                  
           },
           error: function(err) {
             console.log(err)

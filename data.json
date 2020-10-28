@@ -1,6 +1,6 @@
 {
     "cbCVSection": {
-        "SectionTitle": "Section1",
+        "AectionTitle": "Section1",
         "cbd": {
             "CBClass": "cbCVSection"
         },
@@ -20,8 +20,8 @@
                 }
             },
             {
-                "Caption": "Caption2",
-                "Value": "Value2",
+                "Caption": "Caption3",
+                "Value": "Value3",
                 "cbd": {
                     "CBClass": "cbCapVal"
                 }
