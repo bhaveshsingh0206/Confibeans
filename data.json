@@ -26,6 +26,35 @@
                     "CBClass": "cbCapVal"
                 }
             }
-        ]
+        ],
+        "cbCVSection": {
+            "AectionTitle": "Section2",
+            "cbd": {
+                "CBClass": "cbCVSection"
+            },
+            "CaptionValues": [
+                {
+                    "Caption": "Caption4",
+                    "Value": "Value4",
+                    "cbd": {
+                        "CBClass": "cbCapVal"
+                    }
+                },
+                {
+                    "Caption": "Caption5",
+                    "Value": "Value5",
+                    "cbd": {
+                        "CBClass": "cbCapVal"
+                    }
+                },
+                {
+                    "Caption": "Caption6",
+                    "Value": "Value6",
+                    "cbd": {
+                        "CBClass": "cbCapVal"
+                    }
+                }
+            ]
+        }
     }
 }

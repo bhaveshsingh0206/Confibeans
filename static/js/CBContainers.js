@@ -280,15 +280,15 @@ export default class CBContainers {
 
 
   Render(cbtree, parent) {
-    var across = false;
-    var render = true;
-    var keys = Object.keys(cbtree);
-    var parentNestedClasses = [];
-    keys.forEach((key, j) => {
-      if (parent != null) {
-        var obj = dynamicClass(parent["CB"]);
+    var across = false; //bool to check if across needs to be applied
+    var render = true; //bool to check when html must be sent
+    var keys = Object.keys(cbtree); //get keys of cbtree
+    var parentNestedClasses = []; 
+    keys.forEach((key, j) => { // iterate through cbtree
+      if (parent != null) { //initialize variables only if parent exists
+        var obj = dynamicClass(parent["CB"]); //create instance obj of parent to access parent class
         obj = new obj();
-        // console.log(obj)
+        // initialize variables
         var allowedClasses = obj.AllowClasses;
         var disallowedClasses = obj.DisAllowClasses;
         var parentLayouts = obj.Lod;
@@ -297,39 +297,40 @@ export default class CBContainers {
         var style = "";
         render = false;
       }
-      
-
-      if (cbtree[key].hasOwnProperty("Children")) {
-        var children = cbtree[key]["Children"];
+      if (cbtree[key].hasOwnProperty("Children")) { // if chiildren exists
+        var children = cbtree[key]["Children"]; // set children
+        // cmd logic start
         if (parent != null) {
-          
-
+          // if basic allowed classes and disallowed classes is satisfied enter if
           if (
             allowedClasses.includes(cbtree[key]["CB"]) ||
             (allowedClasses.includes("All") &&
               !disallowedClasses.includes(cbtree[key]["CB"])) ||
             !disallowedClasses.includes("All")
           ) {
+            // initialize temporary variables
             var place = "";
             var newStyle = "";
+            // iterate through parent class cmd object
             for (var k = 0; k < parentCMD.length; k++) {
               layoutCmd = parentCMD[k];
-              // checking above
+              // checking if current node cb is in nested part and parent cb is in outer part
               if (
                 cbtree[key]["CB"] === layoutCmd["Nested"] &&
                 layoutCmd["Outer"] === parent["CB"]
               ) {
                 place = layoutCmd["Placement"];
-                newStyle = this.styles[place];
+                newStyle = this.styles[place]; // set temporary variables
                 break;
               }
             }
           }
-          this.htmlContent += `<div class="${newStyle}">`;
+          this.htmlContent += `<div class="${newStyle}">`; // add cmd style to html
           this.Render(children, cbtree[key]);
           this.htmlContent += `</div>`;
+          // cmd logic end
         } else {
-          this.htmlContent += `<div>`;
+          this.htmlContent += `<div>`; // if no cmd then dont add any style
           this.Render(children, cbtree[key]);
           this.htmlContent += `</div>`;
         }
@@ -348,6 +349,7 @@ export default class CBContainers {
           var placeFound = false;
           var layout;
           var len = parentNestedClasses.length;
+          // for loop to check if we will come have an across layout
           for (var k = 0; k < parentLayouts.length; k++) {
             layout = parentLayouts[k];
             if (keys.length > j + 1) {
@@ -360,6 +362,8 @@ export default class CBContainers {
               }
             }
           }
+          // end of across check 
+          // for loop for checking lod of class
           for (var k = 0; k < parentLayouts.length; k++) {
             layout = parentLayouts[k];
             // checking above
@@ -383,18 +387,19 @@ export default class CBContainers {
                 break;
               }
             }
-          }
-          if (!placeFound) {
+          } // lod check end
+          if (!placeFound) { // lod not found then default layout
             placements = "Default";
           }
+          // if we reach leaf nodes that dont have children
           if (cbtree[key]["CB"] == "CBText" || cbtree[key]["CB"] == "CBInput") {
-            
             var leafobj = dynamicClass(cbtree[key]["CB"]);
             leafobj = new leafobj();
             // console.log(typeof leafobj);
             style = leafobj.styles;
             internalStyle = this.styles[placements];
             if (cbtree[key]["CB"] == "CBText") {
+              //check if across layout has to be applied
               if (across)
               this.htmlContent += `<div class="${style}  across"><p class="${internalStyle}">${
                 jsonPath(this.data, cbtree[key]["Path"])[0]
@@ -404,6 +409,7 @@ export default class CBContainers {
                 jsonPath(this.data, cbtree[key]["Path"])[0]
               }</p></div>`;
             } else {
+              //check if across layout has to be applied
               if (across)
               this.htmlContent += `<div class="${style} ${internalStyle} across"><input type="text" class="${internalStyle}" value="${
                 jsonPath(this.data, cbtree[key]["Path"])[0]
@@ -413,13 +419,12 @@ export default class CBContainers {
                 jsonPath(this.data, cbtree[key]["Path"])[0]
               }"></input></div>`;
             }
-            
-            // console.log(this.htmlContent);
           }
-          across = false;
+          across = false; // set across false after html is applied
         }
       }
     });
+    // if render is true we sent html content
     if (render) {
       var t = this;
       setTimeout(function () {

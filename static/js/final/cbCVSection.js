@@ -18,9 +18,9 @@ export default class cbCVSection {
     
         this.Cmd = [
           {
-            Outer: "",
-            Nested: "",
-            Placement: "",
+            Outer: "cbCVSection",
+            Nested: "cbCVSection",
+            Placement: "Indented",
           },
         ];
       }

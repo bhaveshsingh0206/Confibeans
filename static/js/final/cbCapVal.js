@@ -13,7 +13,7 @@ export default class cbCapVal{
 
         this.CBClassofKeys = [
           {
-            "CB":"CBLabel",
+            "CB":"CBText",
             "ApplyTo":["Caption"]
           },
           {
