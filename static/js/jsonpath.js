@@ -1,6 +1,6 @@
 /* JSONPath 0.8.0 - XPath for JSON
  *
- * Copyright (c) 2007 Stefan Goessner (goessner.net)
+ *Ali Bhavesh
  * Licensed under the MIT (MIT-LICENSE.txt) licence.
  */
 function jsonPath(obj, expr, arg) {
@@ -80,9 +80,11 @@ function jsonPath(obj, expr, arg) {
     };
  
     var $ = obj;
+    console.log(P.store("$..cbCVSection..CaptionValues[0]..Value", "badhao paise"));
+    console.log("obj", obj);
     if (expr && obj && (P.resultType == "VALUE" || P.resultType == "PATH")) {
        P.trace(P.normalize(expr).replace(/^\$;/,""), obj, "$");
        return P.result.length ? P.result : false;
     }
- } 
+} 
  

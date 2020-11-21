@@ -271,7 +271,7 @@ export default class CBContainers {
     var t = this;
     setTimeout(function () {
       
-      console.log(JSON.stringify(t.cbTree));
+      // console.log(JSON.stringify(t.cbTree));
 
       t.Render(t.cbTree["root"], null);
     }, 1000);
@@ -394,6 +394,7 @@ export default class CBContainers {
           // if we reach leaf nodes that dont have children
           if (cbtree[key]["CB"] == "CBText" || cbtree[key]["CB"] == "CBInput") {
             var leafobj = dynamicClass(cbtree[key]["CB"]);
+            var path = cbtree[key]["Path"];
             leafobj = new leafobj();
             // console.log(typeof leafobj);
             style = leafobj.styles;
@@ -401,21 +402,21 @@ export default class CBContainers {
             if (cbtree[key]["CB"] == "CBText") {
               //check if across layout has to be applied
               if (across)
-              this.htmlContent += `<div class="${style}  across"><p class="${internalStyle}">${
+              this.htmlContent += `<div class="${style}  across"><p id="${path}" class="${internalStyle}">${
                 jsonPath(this.data, cbtree[key]["Path"])[0]
               }</p></div>`;
             else
-              this.htmlContent += `<div class="${style}"><p class="${internalStyle}">${
+              this.htmlContent += `<div class="${style}"><p id="${path}" class="${internalStyle}">${
                 jsonPath(this.data, cbtree[key]["Path"])[0]
               }</p></div>`;
             } else {
               //check if across layout has to be applied
               if (across)
-              this.htmlContent += `<div class="${style} ${internalStyle} across"><input type="text" class="${internalStyle}" value="${
+              this.htmlContent += `<div class="${style} ${internalStyle} across"><input id="${path}" type="text" class="${internalStyle}" value="${
                 jsonPath(this.data, cbtree[key]["Path"])[0]
               }"></input></div>`;
             else
-              this.htmlContent += `<div class="${style} ${internalStyle}"><input type="text" class="${internalStyle}" value="${
+              this.htmlContent += `<div class="${style} ${internalStyle}"><input id="${path}" type="text" class="${internalStyle}" value="${
                 jsonPath(this.data, cbtree[key]["Path"])[0]
               }"></input></div>`;
             }
@@ -429,7 +430,26 @@ export default class CBContainers {
       var t = this;
       setTimeout(function () {
         $("#data").append(t.htmlContent);
+        t.Collect(t.cbTree["root"]);
       }, 1000);
     }
+  }
+
+  Collect(cbtree){
+    var keys = Object.keys(cbtree); 
+    keys.forEach((key, j) => { 
+      if (cbtree[key].hasOwnProperty("Children")) {
+        var children = cbtree[key]["Children"];
+        this.Collect(children);
+      }
+      else{
+        //get value of leaf node
+        var leafobj = dynamicClass(cbtree[key]["CB"]);
+        leafobj = new leafobj();
+        var value = leafobj.getValue(cbtree[key]["Path"]);
+        //set value in json
+        
+      }
+    });
   }
 }
