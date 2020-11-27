@@ -11,6 +11,11 @@ export default class CBNode {
       },
       {
         First: "CBText",
+        FollowedBy: "CBDate",
+        Placement: "Across",
+      },
+      {
+        First: "CBText",
         FollowedBy: "CBText",
         Placement: "Across",
       },

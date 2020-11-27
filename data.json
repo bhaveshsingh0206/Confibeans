@@ -20,11 +20,8 @@
                 }
             },
             {
-                "Caption": "Caption3",
-                "Value": "Value3",
-                "cbd": {
-                    "CBClass": "cbCapVal"
-                }
+                "Caption": "Last Updated",
+                "Value": "2013-01-08"
             }
         ],
         "cbCVSection": {
@@ -55,6 +52,25 @@
                     }
                 }
             ]
+        },
+        "selectGender":{
+            "Aitle": "Select your Gender",
+            "cbd": {
+                "CBClass":"CBRadioButtons"
+            },
+            "Categories": [{
+                "Type":"Male",
+                "cbd": {
+                    "CBClass":"CBRadioButton"
+                }
+            },
+            {
+                "Type":"Female",
+                "cbd": {
+                    "CBClass":"CBRadioButton"
+                }
+            }]
         }
     }
+    
 }

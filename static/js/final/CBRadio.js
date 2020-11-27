@@ -1,6 +1,6 @@
-export default class CBInput {
+export default class CBRadio {
     constructor(){
-        this.styles = "editable"
+        this.styles = "spaced"
     }
     getValue(path) {
         var leaf = document.getElementById(path);

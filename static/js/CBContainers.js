@@ -267,11 +267,12 @@ export default class CBContainers {
   Parse(data, cbd) {
     this.cbd = cbd;
     this.data = data;
+    // console.log(data)
     this.restructure(data, "Node", "");
     var t = this;
     setTimeout(function () {
       
-      // console.log(JSON.stringify(t.cbTree));
+      console.log(JSON.stringify(t.cbTree));
 
       t.Render(t.cbTree["root"], null);
     }, 1000);
@@ -392,33 +393,56 @@ export default class CBContainers {
             placements = "Default";
           }
           // if we reach leaf nodes that dont have children
-          if (cbtree[key]["CB"] == "CBText" || cbtree[key]["CB"] == "CBInput") {
-            var leafobj = dynamicClass(cbtree[key]["CB"]);
-            var path = cbtree[key]["Path"];
-            leafobj = new leafobj();
-            // console.log(typeof leafobj);
-            style = leafobj.styles;
-            internalStyle = this.styles[placements];
-            if (cbtree[key]["CB"] == "CBText") {
-              //check if across layout has to be applied
-              if (across)
-              this.htmlContent += `<div class="${style}  across"><p id="${path}" class="${internalStyle}">${
-                jsonPath(this.data, cbtree[key]["Path"])[0]
-              }</p></div>`;
-            else
-              this.htmlContent += `<div class="${style}"><p id="${path}" class="${internalStyle}">${
-                jsonPath(this.data, cbtree[key]["Path"])[0]
-              }</p></div>`;
-            } else {
+          if (cbtree[key]["CB"] == "CBText" || cbtree[key]["CB"] == "CBInput" || cbtree[key]["CB"] == "CBDate" || cbtree[key]["CB"] == "CBRadio")  {
+              var leafobj = dynamicClass(cbtree[key]["CB"]);
+              var path = cbtree[key]["Path"];
+              leafobj = new leafobj();
+              // console.log(typeof leafobj);
+              style = leafobj.styles;
+              internalStyle = this.styles[placements];
+              if (cbtree[key]["CB"] == "CBText") {
+                //check if across layout has to be applied
+                if (across)
+                this.htmlContent += `<div class="${style}  across"><p id="${path}" class="${internalStyle}">${
+                  jsonPath(this.data, cbtree[key]["Path"])[0]
+                }</p></div>`;
+              else
+                this.htmlContent += `<div class="${style}"><p id="${path}" class="${internalStyle}">${
+                  jsonPath(this.data, cbtree[key]["Path"])[0]
+                }</p></div>`;
+            } 
+            else if ((cbtree[key]["CB"] == "CBInput") ) {
               //check if across layout has to be applied
               if (across)
               this.htmlContent += `<div class="${style} ${internalStyle} across"><input id="${path}" type="text" class="${internalStyle}" value="${
                 jsonPath(this.data, cbtree[key]["Path"])[0]
               }"></input></div>`;
-            else
-              this.htmlContent += `<div class="${style} ${internalStyle}"><input id="${path}" type="text" class="${internalStyle}" value="${
+              else
+                this.htmlContent += `<div class="${style} ${internalStyle}"><input id="${path}" type="text" class="${internalStyle}" value="${
+                jsonPath(this.data, cbtree[key]["Path"])[0]
+                }"></input></div>`;
+            }
+            else if (cbtree[key]["CB"] == "CBRadio") {
+              if (across)
+                console.log("ok...")
+              // this.htmlContent += `<div class=" ${internalStyle} across"><input id="${path}" type="date" class="" value="${
+              //   jsonPath(this.data, cbtree[key]["Path"])[0]
+              // }"></input></div>`;
+              else
+                this.htmlContent += `<div class=" ${internalStyle}"><input id="${path}" type="radio" name="ok" class="${internalStyle} ${style}" value="${
+                  jsonPath(this.data, cbtree[key]["Path"])[0]
+                }"></input><label for="${path}">${jsonPath(this.data, cbtree[key]["Path"])[0]}</label></div>`;
+            } 
+            else  {
+              //check if across layout has to be applied
+              if (across)
+              this.htmlContent += `<div class=" ${internalStyle} across"><input id="${path}" type="date" class="" value="${
                 jsonPath(this.data, cbtree[key]["Path"])[0]
               }"></input></div>`;
+              else
+                this.htmlContent += `<div class=" ${internalStyle}"><input id="${path}" type="date" class="${internalStyle} ${style}" value="${
+                  jsonPath(this.data, cbtree[key]["Path"])[0]
+                }"></input></div>`;
             }
           }
           across = false; // set across false after html is applied
@@ -430,11 +454,32 @@ export default class CBContainers {
       var t = this;
       setTimeout(function () {
         $("#data").append(t.htmlContent);
-        t.Collect(t.cbTree["root"]);
+        // t.Collect(t.cbTree["root"]);
+        // console.log("Before data ", t.data)
+        // setTimeout(()=>{
+        //   console.log("Saving valueee.............")
+        //   t.Collect(t.cbTree["root"]);
+        //   setTimeout(()=>{
+        //     console.log(t.data)
+        //   }, 1000)
+        // }, 5000)
+        
       }, 1000);
     }
   }
 
+  findDataNode(path) {
+      var subx = [];
+      return path.replace(/[\['](\??\(.*?\))[\]']/g, function($0,$1){return "[#"+(subx.push($1)-1)+"]";})
+                 .replace(/'?\.'?|\['?/g, ";")
+                 .replace(/;;;|;;/g, ";..;")
+                 .replace(/;$|'?\]|'$/g, "")
+                 .replace(/#([0-9]+)/g, function($0,$1){return subx[$1];});
+  }
+  removeElement(item) {
+      return item != ".."
+    
+  }
   Collect(cbtree){
     var keys = Object.keys(cbtree); 
     keys.forEach((key, j) => { 
@@ -447,7 +492,31 @@ export default class CBContainers {
         var leafobj = dynamicClass(cbtree[key]["CB"]);
         leafobj = new leafobj();
         var value = leafobj.getValue(cbtree[key]["Path"]);
-        //set value in json
+        var dataPath = this.findDataNode(cbtree[key]["Path"])
+        dataPath = dataPath.split(";")
+        // console.log(dataPath)
+        dataPath = dataPath.slice(2)
+        dataPath = dataPath.filter(this.removeElement)
+        var temp = ""
+        // console.log(dataPath)
+        dataPath.forEach((key, index)=>{
+          var er = /^-?[0-9]+$/;
+          var isDigit = er.test(key);
+          if (isDigit) {
+            key = Number(key) 
+          }   
+          // console.log("temp ",temp)
+          if (index != dataPath.length-1) {
+            if (temp != "") {
+              temp = temp[key]
+            } else {
+              temp = this.data[key]
+            }
+          } else {
+            
+            temp[key] = value
+          }
+        })        
         
       }
     });
