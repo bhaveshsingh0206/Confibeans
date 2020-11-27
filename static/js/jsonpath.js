@@ -80,8 +80,8 @@ function jsonPath(obj, expr, arg) {
     };
  
     var $ = obj;
-    console.log(P.store("$..cbCVSection..CaptionValues[0]..Value", "badhao paise"));
-    console.log("obj", obj);
+   //  console.log(P.store("$..cbCVSection..CaptionValues[0]..Value", "badhao"));
+   //  console.log("obj", obj);
     if (expr && obj && (P.resultType == "VALUE" || P.resultType == "PATH")) {
        P.trace(P.normalize(expr).replace(/^\$;/,""), obj, "$");
        return P.result.length ? P.result : false;
