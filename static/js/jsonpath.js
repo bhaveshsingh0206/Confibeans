@@ -80,9 +80,10 @@ function jsonPath(obj, expr, arg) {
     };
  
     var $ = obj;
-   //  console.log(P.store("$..cbCVSection..CaptionValues[0]..Value", "badhao"));
-   //  console.log("obj", obj);
     if (expr && obj && (P.resultType == "VALUE" || P.resultType == "PATH")) {
+      //  console.log("P.normalize(expr) ", P.normalize(expr))
+      //  console.log("P.normalize(expr).replace(/^\$;/,\"\") ",P.normalize(expr).replace(/^\$;/,""))
+      //  console.log("P.trace(P.normalize(expr).replace(/^\$;/,\"\"), obj, \"$\") ",P.trace(P.normalize(expr).replace(/^\$;/,""), obj, "$"))
        P.trace(P.normalize(expr).replace(/^\$;/,""), obj, "$");
        return P.result.length ? P.result : false;
     }

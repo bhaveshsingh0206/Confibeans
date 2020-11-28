@@ -4,11 +4,24 @@ export default class CBList {
         this.DisAllowClasses = [""];
     
         this.Lod = [
-          
+          {
+            First: "cbCapVal",
+            FollowedBy: "cbCapVal",
+            Placement: "Down",
+          },
+          {
+            First: "CBRadioButton",
+            FollowedBy: "CBRadioButton",
+            Placement: "Across",
+          }
         ];
     
         this.Cmd = [
-          
+          {
+            Outer: "CBRadioButton",
+            Nested: "CBRadioButton",
+            Placement: "Across",
+          }
         ];
       }
 }

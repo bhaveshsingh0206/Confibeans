@@ -9,10 +9,11 @@ export default class CBContainers {
     this.styles = {
       Center: "title",
       Across: "across",
-      Down: "",
+      Down: "down",
       Default: "default",
       Indented: "indent",
     };
+    this.radioCategories = 0;
   }
 
   checkInCBD(path, cbd) {
@@ -267,11 +268,12 @@ export default class CBContainers {
   Parse(data, cbd) {
     this.cbd = cbd;
     this.data = data;
+    // console.log(data)
     this.restructure(data, "Node", "");
     var t = this;
     setTimeout(function () {
       
-      // console.log(JSON.stringify(t.cbTree));
+      console.log(JSON.stringify(t.cbTree));
 
       t.Render(t.cbTree["root"], null);
     }, 1000);
@@ -301,6 +303,10 @@ export default class CBContainers {
         var children = cbtree[key]["Children"]; // set children
         // cmd logic start
         if (parent != null) {
+          if(cbtree[key]["CB"] == "CBRadioButtons")
+          {
+            this.radioCategories++;
+          }
           // if basic allowed classes and disallowed classes is satisfied enter if
           if (
             allowedClasses.includes(cbtree[key]["CB"]) ||
@@ -375,6 +381,7 @@ export default class CBContainers {
                 placements = layout["Placement"];
                 // console.log("placementsZZZ ", placements);
                 placeFound = true;
+                console.log(layout)
                 break;
               }
             } else {
@@ -384,6 +391,7 @@ export default class CBContainers {
               ) {
                 placements = layout["Placement"];
                 placeFound = true;
+                console.log(layout)
                 break;
               }
             }
@@ -391,8 +399,11 @@ export default class CBContainers {
           if (!placeFound) { // lod not found then default layout
             placements = "Default";
           }
+          else
+            {console.log(placeFound,placements);
+            }
           // if we reach leaf nodes that dont have children
-          if (cbtree[key]["CB"] == "CBText" || cbtree[key]["CB"] == "CBInput") {
+          if (cbtree[key]["CB"] == "CBText" || cbtree[key]["CB"] == "CBInput" || cbtree[key]["CB"] == "CBDate" || cbtree[key]["CB"] == "CBRadio")  {
             var leafobj = dynamicClass(cbtree[key]["CB"]);
             var path = cbtree[key]["Path"];
             leafobj = new leafobj();
@@ -402,23 +413,47 @@ export default class CBContainers {
             if (cbtree[key]["CB"] == "CBText") {
               //check if across layout has to be applied
               if (across)
-              this.htmlContent += `<div class="${style}  across"><p id="${path}" class="${internalStyle}">${
-                jsonPath(this.data, cbtree[key]["Path"])[0]
-              }</p></div>`;
+                this.htmlContent += `<div class="${style}  across"><p id="${path}" class="${internalStyle}">${
+                  jsonPath(this.data, cbtree[key]["Path"])[0]
+                }</p></div>`;
             else
               this.htmlContent += `<div class="${style}"><p id="${path}" class="${internalStyle}">${
                 jsonPath(this.data, cbtree[key]["Path"])[0]
               }</p></div>`;
-            } else {
+            } 
+            else if ((cbtree[key]["CB"] == "CBInput") ) {
               //check if across layout has to be applied
               if (across)
-              this.htmlContent += `<div class="${style} ${internalStyle} across"><input id="${path}" type="text" class="${internalStyle}" value="${
+                this.htmlContent += `<div class="${style} ${internalStyle} across"><input id="${path}" type="text" class="${internalStyle}" value="${
+                  jsonPath(this.data, cbtree[key]["Path"])[0]
+                }"></input></div>`;
+              else
+                this.htmlContent += `<div class="${style} ${internalStyle}"><input id="${path}" type="text" class="${internalStyle}" value="${
                 jsonPath(this.data, cbtree[key]["Path"])[0]
-              }"></input></div>`;
-            else
-              this.htmlContent += `<div class="${style} ${internalStyle}"><input id="${path}" type="text" class="${internalStyle}" value="${
-                jsonPath(this.data, cbtree[key]["Path"])[0]
-              }"></input></div>`;
+                }"></input></div>`;
+            }
+            else if (cbtree[key]["CB"] == "CBRadio") {
+              var radioName = "Category" + this.radioCategories;
+              if (across){
+                this.htmlContent += `<div class="across ${internalStyle}"><input id="${path}" type="radio" name="${radioName}" class="${internalStyle} ${style}" value="${
+                  jsonPath(this.data, cbtree[key]["Path"])[0]
+                }"></input><label for="${path}">${jsonPath(this.data, cbtree[key]["Path"])[0]}</label></div>`;
+              }
+              else
+                this.htmlContent += `<div class=" ${internalStyle}"><input id="${path}" type="radio" name="${radioName}" class="${internalStyle} ${style}" value="${
+                  jsonPath(this.data, cbtree[key]["Path"])[0]
+                }"></input><label for="${path}">${jsonPath(this.data, cbtree[key]["Path"])[0]}</label></div>`;
+            } 
+            else  {
+              //check if across layout has to be applied
+              if (across)
+                this.htmlContent += `<div class=" ${internalStyle} across"><input id="${path}" type="date" class="" value="${
+                  jsonPath(this.data, cbtree[key]["Path"])[0]
+                }"></input></div>`;
+              else
+                this.htmlContent += `<div class=" ${internalStyle}"><input id="${path}" type="date" class="${internalStyle} ${style}" value="${
+                  jsonPath(this.data, cbtree[key]["Path"])[0]
+                }"></input></div>`;
             }
           }
           across = false; // set across false after html is applied
@@ -430,11 +465,32 @@ export default class CBContainers {
       var t = this;
       setTimeout(function () {
         $("#data").append(t.htmlContent);
-        t.Collect(t.cbTree["root"]);
+        // t.Collect(t.cbTree["root"]);
+        // console.log("Before data ", t.data)
+        // setTimeout(()=>{
+        //   console.log("Saving valueee.............")
+        //   t.Collect(t.cbTree["root"]);
+        //   setTimeout(()=>{
+        //     console.log(t.data)
+        //   }, 1000)
+        // }, 5000)
+        
       }, 1000);
     }
   }
 
+  findDataNode(path) {
+      var subx = [];
+      return path.replace(/[\['](\??\(.*?\))[\]']/g, function($0,$1){return "[#"+(subx.push($1)-1)+"]";})
+                 .replace(/'?\.'?|\['?/g, ";")
+                 .replace(/;;;|;;/g, ";..;")
+                 .replace(/;$|'?\]|'$/g, "")
+                 .replace(/#([0-9]+)/g, function($0,$1){return subx[$1];});
+  }
+  removeElement(item) {
+      return item != ".."
+    
+  }
   Collect(cbtree){
     var keys = Object.keys(cbtree); 
     keys.forEach((key, j) => { 
@@ -447,7 +503,31 @@ export default class CBContainers {
         var leafobj = dynamicClass(cbtree[key]["CB"]);
         leafobj = new leafobj();
         var value = leafobj.getValue(cbtree[key]["Path"]);
-        //set value in json
+        var dataPath = this.findDataNode(cbtree[key]["Path"])
+        dataPath = dataPath.split(";")
+        // console.log(dataPath)
+        dataPath = dataPath.slice(2)
+        dataPath = dataPath.filter(this.removeElement)
+        var temp = ""
+        // console.log(dataPath)
+        dataPath.forEach((key, index)=>{
+          var er = /^-?[0-9]+$/;
+          var isDigit = er.test(key);
+          if (isDigit) {
+            key = Number(key) 
+          }   
+          // console.log("temp ",temp)
+          if (index != dataPath.length-1) {
+            if (temp != "") {
+              temp = temp[key]
+            } else {
+              temp = this.data[key]
+            }
+          } else {
+            
+            temp[key] = value
+          }
+        })        
         
       }
     });

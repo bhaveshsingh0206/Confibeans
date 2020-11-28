@@ -70,3 +70,11 @@ button {
 .bold {
   font-weight: 900;
 }
+
+.special {
+  padding: 0 !important;
+}
+
+.down{
+  display: block;
+}

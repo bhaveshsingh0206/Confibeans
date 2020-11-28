@@ -1,16 +1,15 @@
 {
     "root":{
         "CBClassofNode":{
-            "CBClass":"cbClass1",
-            "ApplyTo":["$..Section4"]
+            "CBClass":"CBDate",
+            "ApplyTo":["$..cbCVSection..CaptionValues[2]..Value"]
         },
         "CBTypeofNode":{
             "Type":"type1",
-            "ApplyTo":["$..Section1..values[1]..Caption"]
+            "ApplyTo":["$..cbCVSection..selectGender..Categories[0]..Type", "$..cbCVSection..selectGender..Categories[1]..Type"]
         },
         "CBClassofType":{
-            
-            "CBClass":"cbType1",
+            "CBClass":"CBRadio",
             "ApplyTo":["type1"]
         }
     }

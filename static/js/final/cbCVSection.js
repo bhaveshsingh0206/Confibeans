@@ -10,10 +10,11 @@ export default class cbCVSection {
             Placement: "Down",
           },
           {
-            First: "cbCapVal",
-            FollowedBy: "cbCapVal",
+            First: "CBDate",
+            FollowedBy: "",
             Placement: "Down",
-          },
+          }
+
         ];
     
         this.Cmd = [
