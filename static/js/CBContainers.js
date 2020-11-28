@@ -444,6 +444,9 @@ export default class CBContainers {
                   jsonPath(this.data, cbtree[key]["Path"])[0]
                 }"></input><label for="${path}">${jsonPath(this.data, cbtree[key]["Path"])[0]}</label></div>`;
             } 
+            else if (cbtree[key]["CB"] == "CBDropdown") {
+              console.log("Entered");
+            } 
             else  {
               //check if across layout has to be applied
               if (across)

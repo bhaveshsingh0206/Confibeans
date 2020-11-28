@@ -60,6 +60,26 @@
             },
             "Type1":"Male",
             "Type2":"Female"
+        },
+        "cbDDSection":{
+            "Aitle": "Select your Gender",
+            "cbd": {
+                "CBClass":"cbDDSection"
+            },
+            "Dropdown":[
+                {
+                    "item": "India",
+                    "cbd": {
+                        "CBClass":"CBDropdown"
+                    }
+                },
+                {
+                    "item": "Australia",
+                    "cbd": {
+                        "CBClass":"CBDropdown"
+                    }
+                }
+            ]
         }
     }
     
