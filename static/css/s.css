@@ -62,10 +62,9 @@ button {
   justify-content: center;
 }
 
-.textfield{
+.textfield {
   outline: none;
   border-color: black;
-
 }
 .bold {
   font-weight: 900;
@@ -75,6 +74,6 @@ button {
   padding: 0 !important;
 }
 
-.down{
+.down {
   display: block;
 }

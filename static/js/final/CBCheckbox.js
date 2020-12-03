@@ -1,23 +1,23 @@
-export default class cbDDSection {
+export default class CBCheckbox {
     constructor() {
-        this.AllowClasses = ["CBText", "CBList","CBDropdown"];
+        this.AllowClasses = ["CBText", "CBCheckBoxes"];
         this.DisAllowClasses = [""];
     
         this.Lod = [
           {
             First: "CBText",
-            FollowedBy: "CBDropdown",
+            FollowedBy: "CBCheckBoxes",
             Placement: "Across",
-          },
-          {
-            First: "",
-            FollowedBy: "",
-            Placement: "",
           }
 
         ];
 
-        
+        this.CBClassofKeys = [
+          {
+            "CB":"CBCheckBoxes",
+            "ApplyTo":["Value"]
+          },
+        ]
     
         this.Cmd = [
           {

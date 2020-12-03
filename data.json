@@ -55,31 +55,27 @@
         },
         "selectGender":{
             "Aitle": "Select your Gender",
+            "Value": "Male",
             "cbd": {
-                "CBClass":"CBRadioButtons"
-            },
-            "Type1":"Male",
-            "Type2":"Female"
+                "CBClass":"CBRadioButtons",
+                "LoV": ["Male", "Female", "Other"]
+            }
         },
-        "cbDDSection":{
-            "Aitle": "Select your Gender",
+        "yropdownData1":{
+            "Aitle": "Select Country",
+            "Value": "England",
             "cbd": {
-                "CBClass":"cbDDSection"
-            },
-            "Dropdown":[
-                {
-                    "item": "India",
-                    "cbd": {
-                        "CBClass":"CBDropdown"
-                    }
-                },
-                {
-                    "item": "Australia",
-                    "cbd": {
-                        "CBClass":"CBDropdown"
-                    }
-                }
-            ]
+                "CBClass":"CBDropdown",
+                "LoV": ["India", "Australia", "England"]
+            }
+        },
+        "zheckboxData1":{
+            "Aitle": "Select Choices",
+            "Value": "", 
+            "cbd": {
+                "CBClass":"CBCheckbox",
+                "LoV": ["India", "Australia", "England"]
+            }
         }
     }
     

@@ -1,6 +1,6 @@
 export default class cbCVSection {
     constructor() {
-        this.AllowClasses = ["CBText", "CBList","cbCapVal"];
+        this.AllowClasses = ["CBText", "CBList","cbCapVal","CBDropdown"];
         this.DisAllowClasses = [""];
     
         this.Lod = [

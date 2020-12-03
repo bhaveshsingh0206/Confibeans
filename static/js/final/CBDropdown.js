@@ -1,10 +1,30 @@
 export default class CBDropdown {
-    constructor(){
-        this.styles = "spaced"
-    }
-    getValue(path) {
-        var leaf = document.getElementById(path);
-        var value = leaf.value;
-        return value;
-    }
+    constructor() {
+        this.AllowClasses = ["CBDropdowns", "CBText"];
+        this.DisAllowClasses = [""];
+    
+        this.Lod = [
+          {
+            First: "CBText",
+            FollowedBy: "CBDropdowns",
+            Placement: "Across",
+          }
+
+        ];
+
+        this.CBClassofKeys = [
+          {
+            "CB":"CBDropdowns",
+            "ApplyTo":["Value"]
+          },
+        ]
+    
+        this.Cmd = [
+          {
+            Outer: "",
+            Nested: "",
+            Placement: "",
+          },
+        ];
+      }
 }

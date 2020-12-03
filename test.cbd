@@ -5,12 +5,12 @@
             "ApplyTo":["$..cbCVSection..CaptionValues[2]..Value"]
         },
         "CBTypeofNode":{
-            "Type":"type1",
-            "ApplyTo":["$..cbCVSection..selectGender..Categories[0]..Type", "$..cbCVSection..selectGender..Categories[1]..Type"]
+            "Type":"",
+            "ApplyTo":[""]
         },
         "CBClassofType":{
-            "CBClass":"CBRadio",
-            "ApplyTo":["type1"]
+            "CBClass":"",
+            "ApplyTo":[""]
         }
     }
 }
