@@ -398,7 +398,7 @@ export default class CBContainers {
           }
 
           // if we reach leaf nodes that dont have children
-          if(cbtree[key]["CB"] == "CBDropdowns" || cbtree[key]["CB"] == "CBRadio" || cbtree[key]["CB"] == "CBCheckbox"){
+          if(cbtree[key]["CB"] == "CBDropdowns" || cbtree[key]["CB"] == "CBRadio" || cbtree[key]["CB"] == "CBCheckboxes"){
             var path = cbtree[key]["Path"];
             var pathCBD = path;
             pathCBD = pathCBD.slice(0, pathCBD.length-5);
@@ -442,7 +442,7 @@ export default class CBContainers {
                 }
                 this.htmlContent += `</div>`;
                 break;
-              case "CBCheckbox":
+              case "CBCheckboxes":
                 console.log("Checkbox: Value ka list daalne pe not working hence no code!");
                 break;
             }
