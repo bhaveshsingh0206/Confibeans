@@ -16,7 +16,7 @@ import cbSection3 from './final/cbSection3.js'
 import CBDropdown from './final/CBDropdown.js'
 import CBDropdowns from './final/CBDropdowns.js'
 import CBCheckbox from './final/CBCheckbox.js'
-import CBCheckboxes from './final/CBCheckboxes.js'
+import CBCheckBoxes from './final/CBCheckBoxes.js'
 import CBLabel from './final/CBLabel.js'
 
 
@@ -39,7 +39,7 @@ const classes = {
     CBDropdown,
     CBDropdowns,
     CBCheckbox,
-    CBCheckboxes
+    CBCheckBoxes
 };
 
 export default function dynamicClass (name) {

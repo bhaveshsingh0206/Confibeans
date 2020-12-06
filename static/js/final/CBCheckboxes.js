@@ -1,4 +1,4 @@
-export default class CBCheckboxes {
+export default class CBCheckBoxes {
     constructor(){
         this.styles = "spaced"
         

@@ -55,7 +55,7 @@
         },
         "selectGender":{
             "Aitle": "Select your Gender",
-            "Value": "Male",
+            "Value": ["Male"],
             "cbd": {
                 "CBClass":"CBRadioButtons",
                 "LoV": ["Male", "Female", "Other"]
@@ -63,7 +63,7 @@
         },
         "yropdownData1":{
             "Aitle": "Select Country",
-            "Value": "England",
+            "Value": ["Australia"],
             "cbd": {
                 "CBClass":"CBDropdown",
                 "LoV": ["India", "Australia", "England"]
@@ -71,12 +71,11 @@
         },
         "zheckboxData1":{
             "Aitle": "Select Choices",
-            "Value": "", 
+            "Value": ["India","England"], 
             "cbd": {
                 "CBClass":"CBCheckbox",
                 "LoV": ["India", "Australia", "England"]
             }
         }
     }
-    
 }

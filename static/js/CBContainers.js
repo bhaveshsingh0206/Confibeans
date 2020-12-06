@@ -14,6 +14,7 @@ export default class CBContainers {
       Indented: "indent",
     };
     this.radioCategories = 0;
+    this.checkBoxCategories = 0;
   }
 
   checkInCBD(path, cbd) {
@@ -82,7 +83,11 @@ export default class CBContainers {
         } else if (type == "Array") {
           node["Path"] = "$" + path;
           node["CB"] = cbClass;
-          node["Children"] = {};
+          if (cbClass != "CBDropdowns" && cbClass != "CBRadio" && cbClass != "CBCheckBoxes") {
+            console.log("Ali chor hai", cbClass)
+            node["Children"] = {};
+          }
+          
         } else {
           node["Path"] = "$" + path;
           node["CB"] = cbClass;
@@ -98,7 +103,10 @@ export default class CBContainers {
         } else if (type == "Array") {
           node["Path"] = "$" + path;
           cbd==null ? node["CB"] = "CBList": node["CB"] = cbd;
-          node["Children"] = {};
+          if (cbd != "CBDropdowns" && cbd != "CBRadio" && cbd != "CBCheckBoxes") {
+            console.log("Ali chor hai ", cbd)
+            node["Children"] = {};
+          }
         } else {
           node["Path"] = "$" + path;
           cbd==null ? node["CB"] = "CBText": node["CB"] = cbd;
@@ -305,6 +313,10 @@ export default class CBContainers {
           if(cbtree[key]["CB"] == "CBRadioButtons")
           {
             this.radioCategories++;
+
+          }
+          if (cbtree[key]["CB"]=="CBCheckbox") {
+            this.checkBoxCategories++;
           }
           // if basic allowed classes and disallowed classes is satisfied enter if
           if (
@@ -398,7 +410,7 @@ export default class CBContainers {
           }
 
           // if we reach leaf nodes that dont have children
-          if(cbtree[key]["CB"] == "CBDropdowns" || cbtree[key]["CB"] == "CBRadio" || cbtree[key]["CB"] == "CBCheckboxes"){
+          if(cbtree[key]["CB"] == "CBDropdowns" || cbtree[key]["CB"] == "CBRadio" || cbtree[key]["CB"] == "CBCheckBoxes"){
             var path = cbtree[key]["Path"];
             var pathCBD = path;
             pathCBD = pathCBD.slice(0, pathCBD.length-5);
@@ -409,6 +421,7 @@ export default class CBContainers {
             style = leafobj.styles;
             internalStyle = this.styles[placements];
             var value = jsonPath(this.data, path)[0];
+            console.log("value ", value)
             var values = jsonPath(this.data, pathCBD)[0];
             switch (cbtree[key]["CB"]) {
               case "CBDropdowns":
@@ -417,8 +430,11 @@ export default class CBContainers {
                 else
                   this.htmlContent += `<div class="${style} ${internalStyle}"><select id="${path}">`;
                 for(var k =0; k<values.length ; k++){
-                  if(values[k] == value)
+                  if(this.isChecked(values[k], value)){
+                    console.log("Erorrr->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
                     this.htmlContent += `<option value="${values[k]}" selected>${values[k]}</option>`;
+                  }
+                    
                   else
                     this.htmlContent += `<option value="${values[k]}">${values[k]}</option>`;
                 }
@@ -431,7 +447,7 @@ export default class CBContainers {
                 else
                   this.htmlContent += `<div class="${style} ${internalStyle}">`;
                 for(var k =0; k<values.length ; k++){
-                  if(values[k] == value)
+                  if(this.isChecked(values[k], value))
                     this.htmlContent += `<input id="${path}[${k}]" type="radio" name="${radioName}" class="${internalStyle} ${style}" value="${
                       values[k]
                     }" checked="checked"></input><label for="${path}[${k}]">${values[k]}</label>`;
@@ -442,8 +458,24 @@ export default class CBContainers {
                 }
                 this.htmlContent += `</div>`;
                 break;
-              case "CBCheckboxes":
-                console.log("Checkbox: Value ka list daalne pe not working hence no code!");
+              case "CBCheckBoxes":
+                var checkName = "Category" + this.checkBoxCategories;
+                console.log("CBCheckBoxes")
+                if(across)
+                  this.htmlContent += `<div class="${style} ${internalStyle} across">`;
+                else
+                  this.htmlContent += `<div class="${style} ${internalStyle}">`;
+                for(var k =0; k<values.length ; k++){
+                  if(this.isChecked(values[k], value))
+                    this.htmlContent += `<input id="${path}[${k}]" type="checkbox" name="${checkName}" class="${internalStyle} ${style}" value="${
+                      values[k]
+                    }" checked="checked"></input><label for="${path}[${k}]">${values[k]}</label>`;
+                  else
+                    this.htmlContent += `<input id="${path}[${k}]" type="checkbox" name="${checkName}" class="${internalStyle} ${style}" value="${
+                      values[k]
+                    }" ></input><label for="${path}[${k}]">${values[k]}</label>`;
+                }
+                this.htmlContent += `</div>`;
                 break;
             }
           }
@@ -510,7 +542,13 @@ export default class CBContainers {
       }, 1000);
     }
   }
-
+  isChecked(value, valueList) {
+    for (var k =0;k<valueList.length;k++) {
+      if (value == valueList[k])
+      return true
+    }
+    return false
+  }
   findDataNode(path) {
       var subx = [];
       return path.replace(/[\['](\??\(.*?\))[\]']/g, function($0,$1){return "[#"+(subx.push($1)-1)+"]";})
