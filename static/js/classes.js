@@ -18,7 +18,9 @@ import CBDropdowns from './final/CBDropdowns.js'
 import CBCheckbox from './final/CBCheckbox.js'
 import CBCheckBoxes from './final/CBCheckBoxes.js'
 import CBLabel from './final/CBLabel.js'
-
+import CBPanel from './final/CBPanel.js'
+import CBPanels from './final/CBPanels.js'
+import CBPanelTitle from './final/CBPanelTitle.js'
 
 
 const classes = {
@@ -39,9 +41,41 @@ const classes = {
     CBDropdown,
     CBDropdowns,
     CBCheckbox,
-    CBCheckBoxes
+    CBCheckBoxes,
+    CBPanel,
+    CBPanels,
+    CBPanelTitle
 };
 
 export default function dynamicClass (name) {
     return classes[name];
   }
+
+
+
+
+
+//   "selectGender":{
+//     "Aitle": "Select your Gender",
+//     "Value": ["Male"],
+//     "cbd": {
+//         "CBClass":"CBRadioButtons",
+//         "LoV": ["Male", "Female", "Other"]
+//     }
+// },
+// "yropdownData1":{
+//     "Aitle": "Select Country",
+//     "Value": ["Australia"],
+//     "cbd": {
+//         "CBClass":"CBDropdown",
+//         "LoV": ["India", "Australia", "England"]
+//     }
+// },
+// "zheckboxData1":{
+//     "Aitle": "Select Choices",
+//     "Value": ["India","England"], 
+//     "cbd": {
+//         "CBClass":"CBCheckbox",
+//         "LoV": ["India", "Australia", "England"]
+//     }
+// }

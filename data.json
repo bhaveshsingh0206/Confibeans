@@ -23,59 +23,29 @@
                 "Caption": "Last Updated",
                 "Value": "2013-01-08"
             }
-        ],
-        "cbCVSection": {
-            "AectionTitle": "Section2",
-            "cbd": {
-                "CBClass": "cbCVSection"
-            },
-            "CaptionValues": [
-                {
-                    "Caption": "Caption4",
-                    "Value": "Value4",
-                    "cbd": {
-                        "CBClass": "cbCapVal"
-                    }
-                },
-                {
-                    "Caption": "Caption5",
-                    "Value": "Value5",
-                    "cbd": {
-                        "CBClass": "cbCapVal"
-                    }
-                },
-                {
-                    "Caption": "Caption6",
-                    "Value": "Value6",
-                    "cbd": {
-                        "CBClass": "cbCapVal"
-                    }
+        ]
+    },
+    "zzPanel":{
+        "Aitel":"Ambilight",
+        "Banner":[
+            {
+                "Key": "Features",
+                "Value": "Demo 1 Features",
+                "cbd": {
+                    "CBClass": "CBPanels"
                 }
-            ]
-        },
-        "selectGender":{
-            "Aitle": "Select your Gender",
-            "Value": ["Male"],
-            "cbd": {
-                "CBClass":"CBRadioButtons",
-                "LoV": ["Male", "Female", "Other"]
+            },
+            {
+                "Key": "Specifications",
+                "Value": "Demo 1 Specifications",
+                "cbd": {
+                    "CBClass": "CBPanels"
+                }
             }
-        },
-        "yropdownData1":{
-            "Aitle": "Select Country",
-            "Value": ["Australia"],
-            "cbd": {
-                "CBClass":"CBDropdown",
-                "LoV": ["India", "Australia", "England"]
-            }
-        },
-        "zheckboxData1":{
-            "Aitle": "Select Choices",
-            "Value": ["India","England"], 
-            "cbd": {
-                "CBClass":"CBCheckbox",
-                "LoV": ["India", "Australia", "England"]
-            }
+        ],
+    "cbd": {
+            "CBClass":"CBPanel"
         }
     }
+    
 }

@@ -12,9 +12,11 @@ export default class CBContainers {
       Down: "down",
       Default: "default",
       Indented: "indent",
+      Toggle: "toggle"
     };
     this.radioCategories = 0;
     this.checkBoxCategories = 0;
+    this.panelCategories = 0;
   }
 
   checkInCBD(path, cbd) {
@@ -479,7 +481,7 @@ export default class CBContainers {
                 break;
             }
           }
-          else if (cbtree[key]["CB"] == "CBText" || cbtree[key]["CB"] == "CBInput" || cbtree[key]["CB"] == "CBDate" )  {
+          else if (cbtree[key]["CB"] == "CBText" || cbtree[key]["CB"] == "CBInput" || cbtree[key]["CB"] == "CBDate" || cbtree[key]["CB"] == "CBPanelTitle" )  {
             var leafobj = dynamicClass(cbtree[key]["CB"]);
             var path = cbtree[key]["Path"];
             leafobj = new leafobj();
@@ -489,13 +491,30 @@ export default class CBContainers {
             if (cbtree[key]["CB"] == "CBText") {
               //check if across layout has to be applied
               if (across)
-                this.htmlContent += `<div class="${style}  across"><p id="${path}" class="${internalStyle}">${
+                this.htmlContent += `<div class=" ${internalStyle} across"><p id="${path}" class="${style}">${
                   jsonPath(this.data, cbtree[key]["Path"])[0]
                 }</p></div>`;
             else
-              this.htmlContent += `<div class="${style}"><p id="${path}" class="${internalStyle}">${
+              this.htmlContent += `<div class="${internalStyle}"><p id="${path}" class="${style}">${
                 jsonPath(this.data, cbtree[key]["Path"])[0]
               }</p></div>`;
+            }
+            else if ((cbtree[key]["CB"] == "CBPanelTitle")) {
+              this.panelCategories += 1
+              var name = "Panel"+this.panelCategories
+              if (across){
+                this.htmlContent += `<div class=" ${internalStyle} across" id="${name}"><p class="${style}">${
+                  jsonPath(this.data, cbtree[key]["Path"])[0]
+                } <i class="fal fa-chevron-down"></i></p></div>`;
+
+                
+              }
+            else{
+              this.htmlContent += `<div class="${internalStyle}" id="${name}"><p class="${style}">${
+                jsonPath(this.data, cbtree[key]["Path"])[0]
+              } <i class="fal fa-chevron-down"></i></p></div>`;
+              
+            }
             } 
             else if ((cbtree[key]["CB"] == "CBInput") ) {
               //check if across layout has to be applied
@@ -529,6 +548,11 @@ export default class CBContainers {
       var t = this;
       setTimeout(function () {
         $("#data").append(t.htmlContent);
+        $("#Panel1").click(()=>{  
+          console.log("Clicked")
+          $("#Panel1").siblings().toggle()
+        })
+        
         // t.Collect(t.cbTree["root"]);
         // console.log("Before data ", t.data)
         // setTimeout(()=>{
@@ -542,6 +566,9 @@ export default class CBContainers {
       }, 1000);
     }
   }
+  // trial() {
+  //   console.log("okok")
+  // }
   isChecked(value, valueList) {
     for (var k =0;k<valueList.length;k++) {
       if (value == valueList[k])

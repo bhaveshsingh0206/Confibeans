@@ -77,3 +77,14 @@ button {
 .down {
   display: block;
 }
+
+.panel {
+  color: white;
+  background-color: #303030;
+  height: 50px;
+  padding: 2px;
+  vertical-align: middle;
+  display: inline;
+  cursor: pointer;
+}
+
