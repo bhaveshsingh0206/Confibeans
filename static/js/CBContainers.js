@@ -86,7 +86,6 @@ export default class CBContainers {
           node["Path"] = "$" + path;
           node["CB"] = cbClass;
           if (cbClass != "CBDropdowns" && cbClass != "CBRadio" && cbClass != "CBCheckBoxes") {
-            console.log("Ali chor hai", cbClass)
             node["Children"] = {};
           }
           
@@ -106,7 +105,6 @@ export default class CBContainers {
           node["Path"] = "$" + path;
           cbd==null ? node["CB"] = "CBList": node["CB"] = cbd;
           if (cbd != "CBDropdowns" && cbd != "CBRadio" && cbd != "CBCheckBoxes") {
-            console.log("Ali chor hai ", cbd)
             node["Children"] = {};
           }
         } else {
@@ -317,7 +315,7 @@ export default class CBContainers {
             this.radioCategories++;
 
           }
-          if (cbtree[key]["CB"]=="CBCheckbox") {
+          if (cbtree[key]["CB"]=="CBMultiChoice") {
             this.checkBoxCategories++;
           }
           // if basic allowed classes and disallowed classes is satisfied enter if
@@ -433,7 +431,7 @@ export default class CBContainers {
                   this.htmlContent += `<div class="${style} ${internalStyle}"><select id="${path}">`;
                 for(var k =0; k<values.length ; k++){
                   if(this.isChecked(values[k], value)){
-                    console.log("Erorrr->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
+                    // console.log("Erorrr->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
                     this.htmlContent += `<option value="${values[k]}" selected>${values[k]}</option>`;
                   }
                     
@@ -517,25 +515,47 @@ export default class CBContainers {
             }
             } 
             else if ((cbtree[key]["CB"] == "CBInput") ) {
+              var inputValue = jsonPath(this.data, cbtree[key]["Path"])[0];
+
+              //this is for default cbcapval rendering - currently useless
+              // if(this.jsonChecker(inputValue)){
+              //   inputValue = inputValue.replace(/'/g,"\"");
+              //   var inputObj = JSON.parse(inputValue);
+              //   console.log(inputObj);
+              //   for(var inputKey in inputObj){
+              //     console.log(inputKey);
+              //     console.log(inputObj[inputKey]);
+              //     this.htmlContent += `<div>`;
+              //     this.htmlContent += `<div class=" default across"><p id="${path}" class="${style}">${
+              //       inputKey
+              //     }</p></div>`;
+              //     this.htmlContent += `<div class="${style} ${internalStyle} across"><input id="${path}" type="text" class="${internalStyle}" value="${
+              //       inputObj[inputKey][0]
+              //     }"></input></div>`;
+              //     this.htmlContent += `</div>`;
+              //   }
+              // }
+              
               //check if across layout has to be applied
               if (across)
                 this.htmlContent += `<div class="${style} ${internalStyle} across"><input id="${path}" type="text" class="${internalStyle}" value="${
-                  jsonPath(this.data, cbtree[key]["Path"])[0]
+                  inputValue
                 }"></input></div>`;
               else
                 this.htmlContent += `<div class="${style} ${internalStyle}"><input id="${path}" type="text" class="${internalStyle}" value="${
-                jsonPath(this.data, cbtree[key]["Path"])[0]
+                  inputValue
                 }"></input></div>`;
+              
             }
             else  {
               //check if across layout has to be applied
               if (across)
                 this.htmlContent += `<div class=" ${internalStyle} across"><input id="${path}" type="date" class="" value="${
-                  jsonPath(this.data, cbtree[key]["Path"])[0]
+                  inputValue
                 }"></input></div>`;
               else
                 this.htmlContent += `<div class=" ${internalStyle}"><input id="${path}" type="date" class="${internalStyle} ${style}" value="${
-                  jsonPath(this.data, cbtree[key]["Path"])[0]
+                  inputValue
                 }"></input></div>`;
             }
           }
@@ -566,9 +586,7 @@ export default class CBContainers {
       }, 1000);
     }
   }
-  // trial() {
-  //   console.log("okok")
-  // }
+
   isChecked(value, valueList) {
     for (var k =0;k<valueList.length;k++) {
       if (value == valueList[k])
@@ -576,6 +594,23 @@ export default class CBContainers {
     }
     return false
   }
+
+  //json string validator - useless for now
+
+  // jsonChecker(str){
+  //   str = str.replace(/'/g,"\"");
+  //   try {
+  //       JSON.parse(str);
+  //   } catch (e) {
+  //       return false;
+  //   }
+  //   if(isNaN(str))
+  //     return true;
+  //   else
+  //     return false;
+  // }
+
+
   findDataNode(path) {
       var subx = [];
       return path.replace(/[\['](\??\(.*?\))[\]']/g, function($0,$1){return "[#"+(subx.push($1)-1)+"]";})
@@ -600,7 +635,7 @@ export default class CBContainers {
         var leafobj = dynamicClass(cbtree[key]["CB"]);
         leafobj = new leafobj();
         var value = leafobj.getValue(cbtree[key]["Path"]);
-        var dataPath = this.findDataNode(cbtree[key]["Path"])
+        var dataPath = this.findDataNode(cbtree[key]["Path"]);
         dataPath = dataPath.split(";")
         // console.log(dataPath)
         dataPath = dataPath.slice(2)
@@ -630,3 +665,118 @@ export default class CBContainers {
     });
   }
 }
+
+// types of data in json
+
+// {
+  // "cbCVSection": {
+  //     "AectionTitle": "Section1",
+  //     "cbd": {
+  //         "CBClass": "cbCVSection"
+  //     },
+  //     "CaptionValues": [
+  //         {
+  //             "Caption": "Caption1",
+  //             "Value": "Value1",
+  //             "cbd": {
+  //                 "CBClass": "cbCapVal"
+  //             }
+  //         },
+  //         {
+  //             "Caption": "Caption2",
+  //             "Value": "Value2",
+  //             "cbd": {
+  //                 "CBClass": "cbCapVal"
+  //             }
+  //         },
+  //         {
+  //             "Caption": "Last Updated",
+  //             "Value": "2013-01-08"
+  //         }
+  //     ]
+  // },
+//   "zzPanel":{
+//       "Aitel":"Ambilight",
+//       "Banner":[
+//           {
+//               "Key": "Features",
+//               "Value": "Demo 1 Features",
+//               "cbd": {
+//                   "CBClass": "CBPanels"
+//               }
+//           },
+//           {
+//               "Key": "Specifications",
+//               "Value": "Demo 1 Specifications",
+//               "cbd": {
+//                   "CBClass": "CBPanels"
+//               }
+//           }
+//       ],
+//   "cbd": {
+//           "CBClass":"CBPanel"
+//       }
+//   }
+  
+// }
+
+
+
+
+
+// {
+//   "Invoice": {
+//       "InvoiceDate":{
+//           "Aitle": "Invoice Date",
+//           "Value": "2000-12-20"
+//       },
+//       "InvoiceType":{
+//           "Aitle": "Select Type",
+//           "Value": ["Australia"],
+//           "cbd": {
+//               "CBClass":"CBDropdown",
+//               "LoV": ["India", "Australia", "England"]
+//           }
+//       },
+//       "DI_DocumentType": {
+//           "Caption": "DI_DocumentType",
+//           "Value": [
+//             "Others",
+//             "Aadhar",
+//             "Pan"
+//           ],
+//           "cbd": {
+//             "CBClass": "CBMultiChoice",
+//             "LoV": [
+//               "Others",
+//               "DriverLicense",
+//               "Form",
+//               "Aadhar",
+//               "Pan"
+//             ]
+//           }
+//       },
+//       "zI_SERVING_SIGNATURE": {
+//           "Caption": "DI_SERVING_SIGNATURE",
+//           "Value": [
+//               "detection_signature"
+//           ],
+//           "cbd": {
+//               "CBClass": "CBDropdown",
+//               "LoV": [
+//               "detection_signature1",
+//               "detection_signature"
+//               ]
+//           }
+//       },
+//       "cbCVSection": {
+//           "AectionTitle": "Section1",
+//           "cbd": {
+//               "CBClass": "cbCVSection"
+//           },
+//       "InvoiceNo":{
+//           "ak": "Some Text"
+//       }
+//   }
+// }
+

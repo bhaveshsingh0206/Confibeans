@@ -1,4 +1,6 @@
 {
+  "success": true,
+  "data": {
     "DocumentIndexerCB": {
       "DI_DocumentType": {
         "Caption": "DI_DocumentType",
@@ -79,6 +81,31 @@
         "cbd": {
           "CBClass": "cbCapVal"
         }
+      },
+      "Module": {}
+    }
+  },
+  "cb": {
+    "root": {
+      "CBClassofNode": {
+        "CBClass": "",
+        "ApplyTo": [
+          ""
+        ]
+      },
+      "CBTypeofNode": {
+        "Type": "",
+        "ApplyTo": [
+          "",
+          ""
+        ]
+      },
+      "CBClassofType": {
+        "CBClass": "",
+        "ApplyTo": [
+          ""
+        ]
       }
     }
   }
+}

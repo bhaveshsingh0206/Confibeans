@@ -15,7 +15,7 @@ import cbSection2 from './final/cbSection2.js'
 import cbSection3 from './final/cbSection3.js'
 import CBDropdown from './final/CBDropdown.js'
 import CBDropdowns from './final/CBDropdowns.js'
-import CBCheckbox from './final/CBCheckbox.js'
+import CBMultiChoice from './final/CBMultiChoice.js'
 import CBCheckBoxes from './final/CBCheckBoxes.js'
 import CBLabel from './final/CBLabel.js'
 import CBPanel from './final/CBPanel.js'
@@ -40,7 +40,7 @@ const classes = {
     CBList,
     CBDropdown,
     CBDropdowns,
-    CBCheckbox,
+    CBMultiChoice,
     CBCheckBoxes,
     CBPanel,
     CBPanels,

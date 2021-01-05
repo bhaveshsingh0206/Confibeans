@@ -2,7 +2,7 @@
     "root":{
         "CBClassofNode":{
             "CBClass":"CBDate",
-            "ApplyTo":["$..cbCVSection..CaptionValues[2]..Value"]
+            "ApplyTo":["$..Invoice..InvoiceDate..Value"]
         },
         "CBTypeofNode":{
             "Type":"",

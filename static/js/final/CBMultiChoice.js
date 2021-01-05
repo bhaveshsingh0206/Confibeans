@@ -1,4 +1,4 @@
-export default class CBCheckbox {
+export default class CBMultiChoice {
     constructor() {
         this.AllowClasses = ["CBText", "CBCheckBoxes"];
         this.DisAllowClasses = [""];
