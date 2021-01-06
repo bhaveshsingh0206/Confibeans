@@ -11,8 +11,6 @@ import CBRadioButtons from './final/CBRadioButtons.js'
 import CBList from './final/CBList.js'
 import CBContainers from './CBContainers.js'
 import cbSection1 from './final/cbSection1.js'
-import cbSection2 from './final/cbSection2.js'
-import cbSection3 from './final/cbSection3.js'
 import CBDropdown from './final/CBDropdown.js'
 import CBDropdowns from './final/CBDropdowns.js'
 import CBMultiChoice from './final/CBMultiChoice.js'
@@ -32,8 +30,6 @@ const classes = {
     cbCapVal,
     cbCVSection,
     cbSection1,
-    cbSection2,
-    cbSection3,
     CBContainers,
     CBNode,
     CBText,
