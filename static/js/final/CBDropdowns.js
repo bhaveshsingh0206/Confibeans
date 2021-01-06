@@ -5,7 +5,9 @@ export default class CBDropdowns {
     }
     getValue(path) {
         var leaf = document.getElementById(path);
+        // console.log("Path ", path)
         var value = leaf.value;
-        return value;
+        console.log("Value is ",value)
+        return [value];
     }
 }

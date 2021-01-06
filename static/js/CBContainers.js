@@ -20,6 +20,7 @@ export default class CBContainers {
   }
 
   checkInCBD(path, cbd) {
+    
     var CBClassofNode = cbd["root"]["CBClassofNode"];
     var paths = CBClassofNode["ApplyTo"];
     for (var i = 0; i < paths.length; i++) {
@@ -448,11 +449,11 @@ export default class CBContainers {
                   this.htmlContent += `<div class="${style} ${internalStyle}">`;
                 for(var k =0; k<values.length ; k++){
                   if(this.isChecked(values[k], value))
-                    this.htmlContent += `<input id="${path}[${k}]" type="radio" name="${radioName}" class="${internalStyle} ${style}" value="${
+                    this.htmlContent += `<input id="${path}[${k}]" type="radio" name="${path}" class="${internalStyle} ${style}" value="${
                       values[k]
                     }" checked="checked"></input><label for="${path}[${k}]">${values[k]}</label>`;
                   else
-                    this.htmlContent += `<input id="${path}[${k}]" type="radio" name="${radioName}" class="${internalStyle} ${style}" value="${
+                    this.htmlContent += `<input id="${path}[${k}]" type="radio" name="${path}" class="${internalStyle} ${style}" value="${
                       values[k]
                     }" ></input><label for="${path}[${k}]">${values[k]}</label>`;
                 }
@@ -467,11 +468,11 @@ export default class CBContainers {
                   this.htmlContent += `<div class="${style} ${internalStyle}">`;
                 for(var k =0; k<values.length ; k++){
                   if(this.isChecked(values[k], value))
-                    this.htmlContent += `<input id="${path}[${k}]" type="checkbox" name="${checkName}" class="${internalStyle} ${style}" value="${
+                    this.htmlContent += `<input id="${path}[${k}]" type="checkbox" name="${checkName}" class="${internalStyle} ${style} ${path}" value="${
                       values[k]
                     }" checked="checked"></input><label for="${path}[${k}]">${values[k]}</label>`;
                   else
-                    this.htmlContent += `<input id="${path}[${k}]" type="checkbox" name="${checkName}" class="${internalStyle} ${style}" value="${
+                    this.htmlContent += `<input id="${path}[${k}]" type="checkbox" name="${checkName}" class="${internalStyle} ${style} ${path}" value="${
                       values[k]
                     }" ></input><label for="${path}[${k}]">${values[k]}</label>`;
                 }
@@ -624,6 +625,7 @@ export default class CBContainers {
     
   }
   Collect(cbtree){
+    // console.log("In collect")
     var keys = Object.keys(cbtree); 
     keys.forEach((key, j) => { 
       if (cbtree[key].hasOwnProperty("Children")) {
@@ -632,6 +634,8 @@ export default class CBContainers {
       }
       else{
         //get value of leaf node
+        console.log("leafobj ",cbtree[key]["CB"])
+        // console.log("cbtree[key] ",JSON.stringify(cbtree[key]))
         var leafobj = dynamicClass(cbtree[key]["CB"]);
         leafobj = new leafobj();
         var value = leafobj.getValue(cbtree[key]["Path"]);
@@ -780,3 +784,5 @@ export default class CBContainers {
 //   }
 // }
 
+
+// 

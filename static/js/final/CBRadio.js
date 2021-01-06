@@ -3,8 +3,8 @@ export default class CBRadio {
         this.styles = "spaced"
     }
     getValue(path) {
-        var leaf = document.getElementById(path);
-        var value = leaf.value;
-        return value;
+        var value = document.querySelector(`input[name="${path}"]:checked`).value
+        console.log("Radio ",value)
+        return [value];
     }
 }

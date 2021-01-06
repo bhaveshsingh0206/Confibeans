@@ -67,7 +67,7 @@ function sendData(data) {
   });
 }
 */
-
+var CntainerObj = null;
 function getDataContainer() {
       $.ajax({
           url: 'http://127.0.0.1:5000/api/getJson',
@@ -82,8 +82,8 @@ function getDataContainer() {
             // console.log(JSON.stringify(data))
             var cbd = response["cb"]
             // console.log("cbd ", cbd)
-            var obj = new CBContainers(data, cbd)
-            obj.Parse(data, cbd)                  
+            CntainerObj = new CBContainers(data, cbd)
+            CntainerObj.Parse(data, cbd)                  
           },
           error: function(err) {
             console.log(err)
@@ -96,5 +96,16 @@ $("#get").click(()=>{
   getDataContainer()
 })
 
+
+$("#save").click(()=>{
+  if (CntainerObj) {
+    CntainerObj.Collect(CntainerObj.cbTree["root"])
+    setTimeout(()=>{
+      console.log("------")
+      console.log(JSON.stringify(CntainerObj.data))
+    },2000)
+  }
+  
+})
 
 
