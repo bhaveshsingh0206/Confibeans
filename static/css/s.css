@@ -36,20 +36,29 @@ nav {
   padding: 1rem;
   padding-left: 0rem;
   display: inline-block;
-  /* width: 47%; */
-  text-align: center;
+  text-align: justify;
 }
 .title p {
   color: #b7950b;
   font-weight: 700 !important;
 }
 .default {
-  color: brown;
+  color: #000080;
 }
-button {
+.buttons {
   padding: 1rem;
   outline: none;
   width: 10%;
+  border-radius: 5px;
+  border-color: black;
+  border-width: 1px;
+  cursor: pointer;
+}
+
+.controlButton{
+  padding: 1rem;
+  outline: none;
+  width: 5%;
   border-radius: 5px;
   border-color: black;
   border-width: 1px;
@@ -60,6 +69,20 @@ button {
   padding: 1rem;
   display: flex;
   justify-content: center;
+}
+
+.control-div {
+  padding: 1rem;
+  display: flex;
+}
+
+.controlArea{
+  border-radius: 0.5rem;
+  border: 1px solid black;
+}
+
+.cbContainer{
+  padding: 10px;
 }
 
 .textfield {
@@ -79,12 +102,80 @@ button {
 }
 
 .panel {
-  color: white;
-  background-color: #303030;
+  color: #000080;
+  border: 2px solid #303030;
+  border-radius: 0.5rem;
   height: 50px;
-  padding: 2px;
+  margin-bottom: 10px;
   vertical-align: middle;
   display: inline;
   cursor: pointer;
+  padding: 5px 10px 5px 10px;
 }
 
+.none {
+  display: none;
+}
+
+.module_close {
+  /* border: 3px solid #f8d775; */
+  background-color: #f8d775;
+  margin: 5px 1% 5px 5px;
+  cursor: pointer;
+  display: inline-block;
+  border-radius: 0.5rem;
+}
+
+.module_open {
+  /* border: 3px solid #f8d775; */
+  background-color: #f8d775;
+  margin: 5px 1% 5px 5px;
+  cursor: default;
+  display: block;
+  padding: 15px 10px 15px 10px;
+  border-radius: 0.5rem;
+}
+
+.module_close_caption{
+  padding: 15px 10px 15px 10px;
+}
+
+.moduleTitle {
+  width: 250px;
+  margin-left: 10%;
+  margin-right: 20%;
+}
+
+.caption {
+  width: 23%;
+}
+
+.inpLabel {
+  margin-right: 30px;
+  margin-left: 4px;
+}
+
+input[type="text"] {
+  width: 585%;
+  padding: 0 0 0 10px;
+}
+
+select {
+  width: 595%;
+}
+
+input[type="text"],
+select {
+  background-color: #f5f5f5;
+  border-radius: 0.5rem;
+  border: none;
+  height: 35px;
+  padding-left: 10px;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+.panelDiv {
+  margin: 10px 0px 10px 0px;
+}

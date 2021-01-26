@@ -1,3 +1,4 @@
+// @author - Ali & Bhavesh
 import dynamicClass from "./classes.js";
 export default class CBContainers {
   constructor(cbd, data) {
@@ -12,15 +13,17 @@ export default class CBContainers {
       Down: "down",
       Default: "default",
       Indented: "indent",
-      Toggle: "toggle"
+      Toggle: "toggle",
+      None: "none",
     };
     this.radioCategories = 0;
     this.checkBoxCategories = 0;
     this.panelCategories = 0;
+    this.moduleCategories = 0;
+    this.render = "";
   }
 
   checkInCBD(path, cbd) {
-    
     var CBClassofNode = cbd["root"]["CBClassofNode"];
     var paths = CBClassofNode["ApplyTo"];
     for (var i = 0; i < paths.length; i++) {
@@ -51,32 +54,30 @@ export default class CBContainers {
   checkInParent(parent, children) {
     var obj = dynamicClass(parent["CB"]);
     obj = new obj();
-    var CBClassofKeys = obj.CBClassofKeys
+    var CBClassofKeys = obj.CBClassofKeys;
     if (CBClassofKeys) {
-      for (var i=0;i<CBClassofKeys.length;i++) {
-        var temp = CBClassofKeys[i]
-        var keys = temp["ApplyTo"]
-        for(var j=0;j<keys.length;j++) {
-          if (keys[j]==children) {
+      for (var i = 0; i < CBClassofKeys.length; i++) {
+        var temp = CBClassofKeys[i];
+        var keys = temp["ApplyTo"];
+        for (var j = 0; j < keys.length; j++) {
+          if (keys[j] == children) {
             return temp["CB"];
           }
         }
       }
       return null;
     }
-    
   }
-  newNode(path, type, parent=null, iscb=null) {
+  newNode(path, type, parent = null, iscb = null) {
     var node = {};
     var children = path.split("..");
-    var cbd =null;
-    children = children[children.length-1]
+    var cbd = null;
+    children = children[children.length - 1];
     if (iscb) {
       node["Path"] = "$" + path;
       node["CB"] = iscb;
       node["Children"] = {};
-    }
-    else {
+    } else {
       var cbClass = this.checkInCBD("$" + path, this.cbd);
       if (cbClass != null) {
         if (type == "Object") {
@@ -86,50 +87,59 @@ export default class CBContainers {
         } else if (type == "Array") {
           node["Path"] = "$" + path;
           node["CB"] = cbClass;
-          if (cbClass != "CBDropdowns" && cbClass != "CBRadio" && cbClass != "CBCheckBoxes") {
+          if (
+            cbClass != "CBDropdowns" &&
+            cbClass != "CBRadio" &&
+            cbClass != "CBCheckBoxes"
+          ) {
             node["Children"] = {};
           }
-          
         } else {
           node["Path"] = "$" + path;
           node["CB"] = cbClass;
         }
       } else {
-        if(parent["CB"]){
+        if (parent["CB"]) {
           cbd = this.checkInParent(parent, children);
         }
         if (type == "Object") {
           node["Path"] = "$" + path;
-          cbd==null ? node["CB"] = "CBNode": node["CB"] = cbd;
+          cbd == null ? (node["CB"] = "CBNode") : (node["CB"] = cbd);
+          console.log(parent);
+          console.log(Object.keys(parent).length === 0);
+          // if(!Object.keys(parent).length === 0 && node["CB"] == "CBNode")
           node["Children"] = {};
         } else if (type == "Array") {
           node["Path"] = "$" + path;
-          cbd==null ? node["CB"] = "CBList": node["CB"] = cbd;
-          if (cbd != "CBDropdowns" && cbd != "CBRadio" && cbd != "CBCheckBoxes") {
+          cbd == null ? (node["CB"] = "CBList") : (node["CB"] = cbd);
+          if (
+            cbd != "CBDropdowns" &&
+            cbd != "CBRadio" &&
+            cbd != "CBCheckBoxes"
+          ) {
             node["Children"] = {};
           }
         } else {
           node["Path"] = "$" + path;
-          cbd==null ? node["CB"] = "CBText": node["CB"] = cbd;
+          cbd == null ? (node["CB"] = "CBText") : (node["CB"] = cbd);
         }
       }
     }
     return node;
   }
-   setObj(obj, query, name, prop, type, exist) {
+  setObj(obj, query, name, prop, type, exist) {
     var node;
     for (var key in obj) {
       var value = obj[key];
       if (key === query) {
-        if(exist!=null){
+        if (exist != null) {
           node = exist;
-        }
-        else{
-            node = this.newNode(prop, type, obj[key], null);
+        } else {
+          node = this.newNode(prop, type, obj[key], null);
         }
         obj[key]["Children"][name] = node;
       }
-  
+
       if (typeof value === "object") {
         this.setObj(value, query, name, prop, type, exist);
       }
@@ -157,12 +167,17 @@ export default class CBContainers {
           type = "Object";
           this.setObj(this.cbTree, newName, Name, pathMain, type, null);
           // if cbd exists in this element we set CB of node based on CBClass
-          if (obj[i-1].hasOwnProperty("cbd")) {
+          if (obj[i - 1].hasOwnProperty("cbd")) {
             elementName = Name + y;
             type = "Object";
             var path_obj = pathMain;
             //create custom node and send it to setobj function
-            node = this.newNode(pathMain, type, null,obj[i-1]["cbd"]["CBClass"]);
+            node = this.newNode(
+              pathMain,
+              type,
+              null,
+              obj[i - 1]["cbd"]["CBClass"]
+            );
             this.setObj(this.cbTree, newName, Name, path_obj, type, node);
           }
           // traversing through the child_elements of the object element
@@ -173,7 +188,14 @@ export default class CBContainers {
                 elementName = Name + y;
                 type = "Array";
                 var path_obj = pathMain + ".." + prop;
-                this.setObj(this.cbTree, Name, elementName, path_obj, type, null);
+                this.setObj(
+                  this.cbTree,
+                  Name,
+                  elementName,
+                  path_obj,
+                  type,
+                  null
+                );
                 this.restructure(obj[i - 1][prop], elementName, path_obj, true);
               } else {
                 // set all nodes except the cbd node in cbtree
@@ -181,8 +203,20 @@ export default class CBContainers {
                   elementName = Name + y;
                   type = "Object";
                   path_obj = pathMain + ".." + prop;
-                  this.setObj(this.cbTree, Name, elementName, path_obj, type, null);
-                  this.restructure(obj[[i - 1]][prop], elementName, path_obj, false);
+                  this.setObj(
+                    this.cbTree,
+                    Name,
+                    elementName,
+                    path_obj,
+                    type,
+                    null
+                  );
+                  this.restructure(
+                    obj[[i - 1]][prop],
+                    elementName,
+                    path_obj,
+                    false
+                  );
                 } else y--; // reduce y for correct naming pattern
               }
             } else {
@@ -190,7 +224,14 @@ export default class CBContainers {
               elementName = Name + y;
               type = "";
               var path_leaf = pathMain + ".." + prop;
-              this.setObj(this.cbTree, Name, elementName, path_leaf, type, null);
+              this.setObj(
+                this.cbTree,
+                Name,
+                elementName,
+                path_leaf,
+                type,
+                null
+              );
             }
             y++; // after each iteration increase y for node naming
           }
@@ -210,12 +251,9 @@ export default class CBContainers {
       for (var prop in obj) {
         if (typeof obj[prop] == "object") {
           // if element is an object
-          if (
-            (Name == null || Name == "Node" + (this.z - 1)) &&
-            prop != "cbd" &&
-            !Array.isArray(obj[prop])
-          ) {
+          if (newName == "Node" && prop != "cbd" && !Array.isArray(obj[prop])) {
             // enters this ONLY for primary first layer nodes eg Node1,Node2,Node3 etc...
+
             Name = newName;
             Name = Name + this.z; // z is for naming primary nodes eg z=1 for Node1, z=2 for Node2 etc...
             type = "Object";
@@ -223,7 +261,12 @@ export default class CBContainers {
               // if primary Nodes contain cbd set CB to CBClass
               var path_obj = path + ".." + prop;
               //create custom node and send it to setobj function
-              node = this.newNode(".." + prop,type,null,obj[prop]["cbd"]["CBClass"]);
+              node = this.newNode(
+                ".." + prop,
+                type,
+                null,
+                obj[prop]["cbd"]["CBClass"]
+              );
             } else {
               // else set CBNode
               var path_obj = path + ".." + prop;
@@ -237,20 +280,26 @@ export default class CBContainers {
             Name = newName + y;
             type = "Array";
             var path_leaf = path + ".." + prop;
-            //set node 
+            //set node
             this.setObj(this.cbTree, newName, Name, path_leaf, type, null);
             //recursive call by setting array parameter as TRUE for traversing array elements
             this.restructure(obj[prop], Name, path_leaf, true);
-          } else if(obj[prop]["cbd"]){
+          } else if (obj[prop]["cbd"]) {
             // if normal nodes contain cbd set CB to CBClass
             var path_obj = path + ".." + prop;
             Name = newName + y;
             type = "Object";
             //create custom node and send it to setobj function
-            var node = this.newNode(".." + prop, type, null, obj[prop]["cbd"]["CBClass"]);
+
+            var node = this.newNode(
+              ".." + prop,
+              type,
+              null,
+              obj[prop]["cbd"]["CBClass"]
+            );
             this.setObj(this.cbTree, newName, Name, path_obj, type, node);
             this.restructure(obj[prop], Name, path_obj);
-          }else {
+          } else {
             // set all nodes and skip if cbd appears
             if (prop != "cbd") {
               Name = newName + y;
@@ -263,39 +312,65 @@ export default class CBContainers {
             }
           }
         } else {
-          //leaf nodes
-          Name = newName + y;
-          type = "";
-          var path_leaf = path + ".." + prop;
-          this.setObj(this.cbTree, newName, Name, path_leaf, type, null,null);
+          if (newName == "Node") {
+            console.log(prop);
+            //leaf nodes
+            Name = newName + this.z;
+            console.log(Name);
+            type = "";
+            node = this.newNode(".." + prop, type, obj, null);
+            this.cbTree.root[Name] = node;
+            this.z++;
+            var path_leaf = path + ".." + prop;
+          } else {
+            console.log(prop);
+            //leaf nodes
+            Name = newName + y;
+            console.log(Name);
+            type = "";
+            var path_leaf = path + ".." + prop;
+            this.setObj(
+              this.cbTree,
+              newName,
+              Name,
+              path_leaf,
+              type,
+              null,
+              null
+            );
+          }
         }
         y++;
       }
     }
   }
- 
+
   Parse(data, cbd) {
     this.cbd = cbd;
     this.data = data;
     this.restructure(data, "Node", "");
     var t = this;
     setTimeout(function () {
-      
       console.log(JSON.stringify(t.cbTree));
 
       t.Render(t.cbTree["root"], null);
     }, 1000);
   }
 
-
+  FolderGenerator(node, parent) {
+    this.htmlContent += `<div>` + node["Path"] + `</div>`;
+    return;
+  }
 
   Render(cbtree, parent) {
     var across = false; //bool to check if across needs to be applied
     var render = true; //bool to check when html must be sent
     var keys = Object.keys(cbtree); //get keys of cbtree
-    var parentNestedClasses = []; 
-    keys.forEach((key, j) => { // iterate through cbtree
-      if (parent != null) { //initialize variables only if parent exists
+    var parentNestedClasses = [];
+    keys.forEach((key, j) => {
+      // iterate through cbtree
+      if (parent != null) {
+        //initialize variables only if parent exists
         var obj = dynamicClass(parent["CB"]); //create instance obj of parent to access parent class
         obj = new obj();
         // initialize variables
@@ -307,16 +382,17 @@ export default class CBContainers {
         var style = "";
         render = false;
       }
-      if (cbtree[key].hasOwnProperty("Children")) { // if chiildren exists
+      if (cbtree[key]["CB"] == "CBNode")
+        this.FolderGenerator(cbtree[key], parent);
+      else if (cbtree[key].hasOwnProperty("Children")) {
+        // if chiildren exists
         var children = cbtree[key]["Children"]; // set children
         // cmd logic start
         if (parent != null) {
-          if(cbtree[key]["CB"] == "CBRadioButtons")
-          {
+          if (cbtree[key]["CB"] == "CBRadioButtons") {
             this.radioCategories++;
-
           }
-          if (cbtree[key]["CB"]=="CBMultiChoice") {
+          if (cbtree[key]["CB"] == "CBMultiChoice") {
             this.checkBoxCategories++;
           }
           // if basic allowed classes and disallowed classes is satisfied enter if
@@ -343,10 +419,22 @@ export default class CBContainers {
               }
             }
           }
-          this.htmlContent += `<div class="${newStyle}">`; // add cmd style to html
+          if (cbtree[key]["CB"] == "CBPropertyBag") {
+            var moduleid = "moduleDiv" + this.moduleCategories;
+            this.htmlContent += `<div class="module_close" id="${moduleid}" onclick="moduleEvent(this)">`; // if no cmd then dont add any style
+            this.Render(children, cbtree[key]);
+            this.htmlContent += `</div>`;
+          } else {
+            this.htmlContent += `<div class="${newStyle}">`; // add cmd style to html
+            this.Render(children, cbtree[key]);
+            this.htmlContent += `</div>`;
+          }
+          // cmd logic end
+        } else if (cbtree[key]["CB"] == "CBPropertyBag") {
+          var moduleid = "moduleDiv" + this.moduleCategories;
+          this.htmlContent += `<div class="module_close" id="${moduleid}" onclick="moduleEvent(this)">`; // if propertyBag add class
           this.Render(children, cbtree[key]);
           this.htmlContent += `</div>`;
-          // cmd logic end
         } else {
           this.htmlContent += `<div>`; // if no cmd then dont add any style
           this.Render(children, cbtree[key]);
@@ -380,7 +468,7 @@ export default class CBContainers {
               }
             }
           }
-          // end of across check 
+          // end of across check
           // for loop for checking lod of class
           for (var k = 0; k < parentLayouts.length; k++) {
             layout = parentLayouts[k];
@@ -406,15 +494,20 @@ export default class CBContainers {
               }
             }
           } // lod check end
-          if (!placeFound) { // lod not found then default layout
+          if (!placeFound) {
+            // lod not found then default layout
             placements = "Default";
           }
 
           // if we reach leaf nodes that dont have children
-          if(cbtree[key]["CB"] == "CBDropdowns" || cbtree[key]["CB"] == "CBRadio" || cbtree[key]["CB"] == "CBCheckBoxes"){
+          if (
+            cbtree[key]["CB"] == "CBDropdowns" ||
+            cbtree[key]["CB"] == "CBRadio" ||
+            cbtree[key]["CB"] == "CBCheckBoxes"
+          ) {
             var path = cbtree[key]["Path"];
             var pathCBD = path;
-            pathCBD = pathCBD.slice(0, pathCBD.length-5);
+            pathCBD = pathCBD.slice(0, pathCBD.length - 5);
             pathCBD = pathCBD + "cbd..LoV";
             var leafobj = dynamicClass(cbtree[key]["CB"]);
             var path = cbtree[key]["Path"];
@@ -422,65 +515,59 @@ export default class CBContainers {
             style = leafobj.styles;
             internalStyle = this.styles[placements];
             var value = jsonPath(this.data, path)[0];
-            console.log("value ", value)
+            console.log("value ", value);
             var values = jsonPath(this.data, pathCBD)[0];
             switch (cbtree[key]["CB"]) {
               case "CBDropdowns":
-                if(across)
+                if (across)
                   this.htmlContent += `<div class="${style} ${internalStyle} across"><select id="${path}">`;
                 else
                   this.htmlContent += `<div class="${style} ${internalStyle}"><select id="${path}">`;
-                for(var k =0; k<values.length ; k++){
-                  if(this.isChecked(values[k], value)){
+                for (var k = 0; k < values.length; k++) {
+                  if (this.isChecked(values[k], value)) {
                     // console.log("Erorrr->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
                     this.htmlContent += `<option value="${values[k]}" selected>${values[k]}</option>`;
-                  }
-                    
-                  else
+                  } else
                     this.htmlContent += `<option value="${values[k]}">${values[k]}</option>`;
                 }
                 this.htmlContent += `</select></div>`;
                 break;
               case "CBRadio":
                 var radioName = "Category" + this.radioCategories;
-                if(across)
+                if (across)
                   this.htmlContent += `<div class="${style} ${internalStyle} across">`;
                 else
                   this.htmlContent += `<div class="${style} ${internalStyle}">`;
-                for(var k =0; k<values.length ; k++){
-                  if(this.isChecked(values[k], value))
-                    this.htmlContent += `<input id="${path}[${k}]" type="radio" name="${path}" class="${internalStyle} ${style}" value="${
-                      values[k]
-                    }" checked="checked"></input><label for="${path}[${k}]">${values[k]}</label>`;
+                for (var k = 0; k < values.length; k++) {
+                  if (this.isChecked(values[k], value))
+                    this.htmlContent += `<input id="${path}[${k}]" type="radio" name="${path}" class="${internalStyle} ${style}" value="${values[k]}" checked="checked"></input><label class="inpLabel" for="${path}[${k}]">${values[k]}</label>`;
                   else
-                    this.htmlContent += `<input id="${path}[${k}]" type="radio" name="${path}" class="${internalStyle} ${style}" value="${
-                      values[k]
-                    }" ></input><label for="${path}[${k}]">${values[k]}</label>`;
+                    this.htmlContent += `<input id="${path}[${k}]" type="radio" name="${path}" class="${internalStyle} ${style}" value="${values[k]}" ></input><label class="inpLabel" for="${path}[${k}]">${values[k]}</label>`;
                 }
                 this.htmlContent += `</div>`;
                 break;
               case "CBCheckBoxes":
                 var checkName = "Category" + this.checkBoxCategories;
-                console.log("CBCheckBoxes")
-                if(across)
+                console.log("CBCheckBoxes");
+                if (across)
                   this.htmlContent += `<div class="${style} ${internalStyle} across">`;
                 else
                   this.htmlContent += `<div class="${style} ${internalStyle}">`;
-                for(var k =0; k<values.length ; k++){
-                  if(this.isChecked(values[k], value))
-                    this.htmlContent += `<input id="${path}[${k}]" type="checkbox" name="${checkName}" class="${internalStyle} ${style} ${path}" value="${
-                      values[k]
-                    }" checked="checked"></input><label for="${path}[${k}]">${values[k]}</label>`;
+                for (var k = 0; k < values.length; k++) {
+                  if (this.isChecked(values[k], value))
+                    this.htmlContent += `<input id="${path}[${k}]" type="checkbox" name="${checkName}" class=" ${internalStyle} ${style} ${path}" value="${values[k]}" checked="checked"></input><label class="inpLabel" for="${path}[${k}]">${values[k]}</label>`;
                   else
-                    this.htmlContent += `<input id="${path}[${k}]" type="checkbox" name="${checkName}" class="${internalStyle} ${style} ${path}" value="${
-                      values[k]
-                    }" ></input><label for="${path}[${k}]">${values[k]}</label>`;
+                    this.htmlContent += `<input id="${path}[${k}]" type="checkbox" name="${checkName}" class=" ${internalStyle} ${style} ${path}" value="${values[k]}" ></input><label class="inpLabel" for="${path}[${k}]">${values[k]}</label>`;
                 }
                 this.htmlContent += `</div>`;
                 break;
             }
-          }
-          else if (cbtree[key]["CB"] == "CBText" || cbtree[key]["CB"] == "CBInput" || cbtree[key]["CB"] == "CBDate" || cbtree[key]["CB"] == "CBPanelTitle" )  {
+          } else if (
+            cbtree[key]["CB"] == "CBText" ||
+            cbtree[key]["CB"] == "CBInput" ||
+            cbtree[key]["CB"] == "CBDate" ||
+            cbtree[key]["CB"] == "CBPanelTitle"
+          ) {
             var leafobj = dynamicClass(cbtree[key]["CB"]);
             var path = cbtree[key]["Path"];
             leafobj = new leafobj();
@@ -490,32 +577,38 @@ export default class CBContainers {
             if (cbtree[key]["CB"] == "CBText") {
               //check if across layout has to be applied
               if (across)
-                this.htmlContent += `<div class=" ${internalStyle} across"><p id="${path}" class="${style}">${
+                this.htmlContent += `<div class=" ${internalStyle} caption across"><p id="${path}" class="${style}">${
                   jsonPath(this.data, cbtree[key]["Path"])[0]
                 }</p></div>`;
-            else
-              this.htmlContent += `<div class="${internalStyle}"><p id="${path}" class="${style}">${
-                jsonPath(this.data, cbtree[key]["Path"])[0]
-              }</p></div>`;
-            }
-            else if ((cbtree[key]["CB"] == "CBPanelTitle")) {
-              this.panelCategories += 1
-              var name = "Panel"+this.panelCategories
-              if (across){
-                this.htmlContent += `<div class=" ${internalStyle} across" id="${name}"><p class="${style}">${
+              else if (parent["CB"] == "CBPropertyBag") {
+                var moduleid = "module" + this.moduleCategories;
+                this.moduleCategories++;
+                this.htmlContent += `<div class="${internalStyle} module_close_caption" id="${moduleid}" onclick="propertyBag(this)"><p id="${path}" class="${style}">${
+                  jsonPath(this.data, cbtree[key]["Path"])[0]
+                }</p></div>`;
+                this.htmlContent += `<div class="moduleTitle none ${internalStyle} across"><p id="${path}" class="${style}">
+                  Property
+                </p></div>
+                <div class="moduleTitle ${internalStyle} none across"><p id="${path}" class="${style}">
+                  Value
+                </p></div>`;
+              } else
+                this.htmlContent += `<div class="caption ${internalStyle}"><p id="${path}" class="${style}">${
+                  jsonPath(this.data, cbtree[key]["Path"])[0]
+                }</p></div>`;
+            } else if (cbtree[key]["CB"] == "CBPanelTitle") {
+              this.panelCategories += 1;
+              var name = "Panel" + this.panelCategories;
+              if (across) {
+                this.htmlContent += `<div class="panelDiv ${internalStyle} across" id="${name}" onclick="forToggle(this) onbeforeprint="forToggle(this)"><p class="${style}">${
                   jsonPath(this.data, cbtree[key]["Path"])[0]
                 } <i class="fal fa-chevron-down"></i></p></div>`;
-
-                
+              } else {
+                this.htmlContent += `<div class="panelDiv ${internalStyle}" id="${name}" onclick="forToggle(this)" onbeforeprint="forToggle(this)"><p class="${style}">${
+                  jsonPath(this.data, cbtree[key]["Path"])[0]
+                } <i class="fal fa-chevron-down"></i></p></div>`;
               }
-            else{
-              this.htmlContent += `<div class="${internalStyle}" id="${name}"><p class="${style}">${
-                jsonPath(this.data, cbtree[key]["Path"])[0]
-              } <i class="fal fa-chevron-down"></i></p></div>`;
-              
-            }
-            } 
-            else if ((cbtree[key]["CB"] == "CBInput") ) {
+            } else if (cbtree[key]["CB"] == "CBInput") {
               var inputValue = jsonPath(this.data, cbtree[key]["Path"])[0];
 
               //this is for default cbcapval rendering - currently useless
@@ -536,28 +629,18 @@ export default class CBContainers {
               //     this.htmlContent += `</div>`;
               //   }
               // }
-              
+
               //check if across layout has to be applied
               if (across)
-                this.htmlContent += `<div class="${style} ${internalStyle} across"><input id="${path}" type="text" class="${internalStyle}" value="${
-                  inputValue
-                }"></input></div>`;
+                this.htmlContent += `<div class="${style} ${internalStyle} across"><input id="${path}" type="text" class="${internalStyle}" value="${inputValue}"></input></div>`;
               else
-                this.htmlContent += `<div class="${style} ${internalStyle}"><input id="${path}" type="text" class="${internalStyle}" value="${
-                  inputValue
-                }"></input></div>`;
-              
-            }
-            else  {
+                this.htmlContent += `<div class="${style} ${internalStyle}"><input id="${path}" type="text" class="${internalStyle}" value="${inputValue}"></input></div>`;
+            } else {
               //check if across layout has to be applied
               if (across)
-                this.htmlContent += `<div class=" ${internalStyle} across"><input id="${path}" type="date" class="" value="${
-                  inputValue
-                }"></input></div>`;
+                this.htmlContent += `<div class=" ${internalStyle} across"><input id="${path}" type="date" class="" value="${inputValue}"></input></div>`;
               else
-                this.htmlContent += `<div class=" ${internalStyle}"><input id="${path}" type="date" class="${internalStyle} ${style}" value="${
-                  inputValue
-                }"></input></div>`;
+                this.htmlContent += `<div class=" ${internalStyle}"><input id="${path}" type="date" class="${internalStyle} ${style}" value="${inputValue}"></input></div>`;
             }
           }
           across = false; // set across false after html is applied
@@ -567,13 +650,18 @@ export default class CBContainers {
     // if render is true we sent html content
     if (render) {
       var t = this;
+      var finalContent =
+        `<div class="controlArea"><div class="control-div">
+      <button class="controlButton" id="upButton"><p><i class="fa fa-arrow-up"></i></p></button>
+    </div></div><div class="cbContainer"><div class="renderArea">` +
+        this.htmlContent +
+        `</div></div>`;
       setTimeout(function () {
-        $("#data").append(t.htmlContent);
-        $("#Panel1").click(()=>{  
-          console.log("Clicked")
-          $("#Panel1").siblings().toggle()
-        })
-        
+        $("#data").append(finalContent);
+        // $(d).click(function () {
+        //   $(d).siblings().toggleClass("none");
+        //   $(d).toggle();
+        // });
         // t.Collect(t.cbTree["root"]);
         // console.log("Before data ", t.data)
         // setTimeout(()=>{
@@ -583,17 +671,15 @@ export default class CBContainers {
         //     console.log(t.data)
         //   }, 1000)
         // }, 5000)
-        
       }, 1000);
     }
   }
 
   isChecked(value, valueList) {
-    for (var k =0;k<valueList.length;k++) {
-      if (value == valueList[k])
-      return true
+    for (var k = 0; k < valueList.length; k++) {
+      if (value == valueList[k]) return true;
     }
-    return false
+    return false;
   }
 
   //json string validator - useless for now
@@ -611,60 +697,60 @@ export default class CBContainers {
   //     return false;
   // }
 
-
   findDataNode(path) {
-      var subx = [];
-      return path.replace(/[\['](\??\(.*?\))[\]']/g, function($0,$1){return "[#"+(subx.push($1)-1)+"]";})
-                 .replace(/'?\.'?|\['?/g, ";")
-                 .replace(/;;;|;;/g, ";..;")
-                 .replace(/;$|'?\]|'$/g, "")
-                 .replace(/#([0-9]+)/g, function($0,$1){return subx[$1];});
+    var subx = [];
+    return path
+      .replace(/[\['](\??\(.*?\))[\]']/g, function ($0, $1) {
+        return "[#" + (subx.push($1) - 1) + "]";
+      })
+      .replace(/'?\.'?|\['?/g, ";")
+      .replace(/;;;|;;/g, ";..;")
+      .replace(/;$|'?\]|'$/g, "")
+      .replace(/#([0-9]+)/g, function ($0, $1) {
+        return subx[$1];
+      });
   }
   removeElement(item) {
-      return item != ".."
-    
+    return item != "..";
   }
-  Collect(cbtree){
+  Collect(cbtree) {
     // console.log("In collect")
-    var keys = Object.keys(cbtree); 
-    keys.forEach((key, j) => { 
+    var keys = Object.keys(cbtree);
+    keys.forEach((key, j) => {
       if (cbtree[key].hasOwnProperty("Children")) {
         var children = cbtree[key]["Children"];
         this.Collect(children);
-      }
-      else{
+      } else {
         //get value of leaf node
-        console.log("leafobj ",cbtree[key]["CB"])
+        console.log("leafobj ", cbtree[key]["CB"]);
         // console.log("cbtree[key] ",JSON.stringify(cbtree[key]))
         var leafobj = dynamicClass(cbtree[key]["CB"]);
         leafobj = new leafobj();
         var value = leafobj.getValue(cbtree[key]["Path"]);
         var dataPath = this.findDataNode(cbtree[key]["Path"]);
-        dataPath = dataPath.split(";")
+        dataPath = dataPath.split(";");
         // console.log(dataPath)
-        dataPath = dataPath.slice(2)
-        dataPath = dataPath.filter(this.removeElement)
-        var temp = ""
+        dataPath = dataPath.slice(2);
+        dataPath = dataPath.filter(this.removeElement);
+        var temp = "";
         // console.log(dataPath)
-        dataPath.forEach((key, index)=>{
+        dataPath.forEach((key, index) => {
           var er = /^-?[0-9]+$/;
           var isDigit = er.test(key);
           if (isDigit) {
-            key = Number(key) 
-          }   
+            key = Number(key);
+          }
           // console.log("temp ",temp)
-          if (index != dataPath.length-1) {
+          if (index != dataPath.length - 1) {
             if (temp != "") {
-              temp = temp[key]
+              temp = temp[key];
             } else {
-              temp = this.data[key]
+              temp = this.data[key];
             }
           } else {
-            
-            temp[key] = value
+            temp[key] = value;
           }
-        })        
-        
+        });
       }
     });
   }
@@ -673,60 +759,56 @@ export default class CBContainers {
 // types of data in json
 
 // {
-  // "cbCVSection": {
-  //     "AectionTitle": "Section1",
-  //     "cbd": {
-  //         "CBClass": "cbCVSection"
-  //     },
-  //     "CaptionValues": [
-  //         {
-  //             "Caption": "Caption1",
-  //             "Value": "Value1",
-  //             "cbd": {
-  //                 "CBClass": "cbCapVal"
-  //             }
-  //         },
-  //         {
-  //             "Caption": "Caption2",
-  //             "Value": "Value2",
-  //             "cbd": {
-  //                 "CBClass": "cbCapVal"
-  //             }
-  //         },
-  //         {
-  //             "Caption": "Last Updated",
-  //             "Value": "2013-01-08"
-  //         }
-  //     ]
-  // },
-//   "zzPanel":{
-//       "Aitel":"Ambilight",
-//       "Banner":[
-//           {
-//               "Key": "Features",
-//               "Value": "Demo 1 Features",
-//               "cbd": {
-//                   "CBClass": "CBPanels"
-//               }
-//           },
-//           {
-//               "Key": "Specifications",
-//               "Value": "Demo 1 Specifications",
-//               "cbd": {
-//                   "CBClass": "CBPanels"
-//               }
-//           }
-//       ],
-//   "cbd": {
-//           "CBClass":"CBPanel"
-//       }
-//   }
-  
+//   "cbCVSection": {
+//       "AectionTitle": "Section1",
+//       "cbd": {
+//           "CBClass": "cbCVSection"
+//       },
+// "CaptionValues": [
+//     {
+//         "Caption": "Caption1",
+//         "Value": "Value1",
+//         "cbd": {
+//             "CBClass": "cbCapVal"
+//         }
+//     },
+//     {
+//         "Caption": "Caption2",
+//         "Value": "Value2",
+//         "cbd": {
+//             "CBClass": "cbCapVal"
+//         }
+//     },
+//     {
+//         "Caption": "Last Updated",
+//         "Value": "2013-01-08"
+//     }
+// ]
+//   },
+// "zzPanel":{
+//     "Aitel":"Ambilight",
+//     "Banner":[
+//         {
+//             "Key": "Features",
+//             "Value": "Demo 1 Features",
+//             "cbd": {
+//                 "CBClass": "CBPanels"
+//             }
+//         },
+//         {
+//             "Key": "Specifications",
+//             "Value": "Demo 1 Specifications",
+//             "cbd": {
+//                 "CBClass": "CBPanels"
+//             }
+//         }
+//     ],
+// "cbd": {
+//         "CBClass":"CBPanel"
+//     }
 // }
 
-
-
-
+// }
 
 // {
 //   "Invoice": {
@@ -784,5 +866,4 @@ export default class CBContainers {
 //   }
 // }
 
-
-// 
+//

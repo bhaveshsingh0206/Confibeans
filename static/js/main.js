@@ -1,5 +1,5 @@
-import dynamicClass  from './classes.js';
-import CBContainers from './CBContainers.js'
+import dynamicClass from "./classes.js";
+import CBContainers from "./CBContainers.js";
 // $(".get").click(() => {
 //   getData();
 // });
@@ -69,43 +69,38 @@ function sendData(data) {
 */
 var CntainerObj = null;
 function getDataContainer() {
-      $.ajax({
-          url: 'http://127.0.0.1:5000/api/getJson',
-          method: 'POST',
-          processData: false,
-          contentType: 'application/json',
-          data: JSON.stringify({
-             type: "sample",
-          }),
-          success: function(response) {
-            var data = response["data"]
-            // console.log(JSON.stringify(data))
-            var cbd = response["cb"]
-            // console.log("cbd ", cbd)
-            CntainerObj = new CBContainers(data, cbd)
-            CntainerObj.Parse(data, cbd)                  
-          },
-          error: function(err) {
-            console.log(err)
-          }      
-       });  
+  $.ajax({
+    url: "http://127.0.0.1:5000/api/getJson",
+    method: "POST",
+    processData: false,
+    contentType: "application/json",
+    data: JSON.stringify({
+      type: "sample",
+    }),
+    success: function (response) {
+      var data = response["data"];
+      // console.log(JSON.stringify(data))
+      var cbd = response["cb"];
+      // console.log("cbd ", cbd)
+      CntainerObj = new CBContainers(data, cbd);
+      CntainerObj.Parse(data, cbd);
+    },
+    error: function (err) {
+      console.log(err);
+    },
+  });
 }
 
+$("#get").click(() => {
+  getDataContainer();
+});
 
-$("#get").click(()=>{  
-  getDataContainer()
-})
-
-
-$("#save").click(()=>{
+$("#save").click(() => {
   if (CntainerObj) {
-    CntainerObj.Collect(CntainerObj.cbTree["root"])
-    setTimeout(()=>{
-      console.log("------")
-      console.log(JSON.stringify(CntainerObj.data))
-    },2000)
+    CntainerObj.Collect(CntainerObj.cbTree["root"]);
+    setTimeout(() => {
+      console.log("------");
+      console.log(JSON.stringify(CntainerObj.data));
+    }, 2000);
   }
-  
-})
-
-
+});

@@ -1,0 +1,86 @@
+{
+  "success": true,
+  "data": {
+    "DocumentIndexerCB": {
+      "DI_ROI_DETECTION_HOSTNAME": {
+        "Caption": "DI_ROI_DETECTION_HOSTNAME",
+        "Value": "192.168.1.63",
+        "cbd": {
+          "CBClass": "cbCapVal"
+        }
+      },
+      "DI_SERVING_SIGNATURE": {
+        "Caption": "DI_SERVING_SIGNATURE",
+        "Value": [
+          "detection_signature"
+        ],
+        "cbd": {
+          "CBClass": "CBDropdown",
+          "LoV": [
+            "detection_signature",
+            "detection_signature1"
+          ]
+        }
+      },
+      "DI_DocumentType": {
+        "Caption": "DI_DocumentType",
+        "Value": [
+          "Pan",
+          "Aadhar",
+          "Others"
+        ],
+        "cbd": {
+          "CBClass": "CBMultiChoice",
+          "LoV": [
+            "Pan",
+            "Aadhar",
+            "Form",
+            "DriverLicense",
+            "Others"
+          ]
+        }
+      },
+      "Module": {
+        "Caption": "Module",
+        "ModuleName": {
+          "Caption": "ModuleName",
+          "Value": "Document Indexer",
+          "cbd": {
+            "CBClass": "cbCapVal"
+          }
+        },
+        "ModuleVersion": {
+          "Caption": "ModuleVersion",
+          "Value": "di3.1.3",
+          "cbd": {
+            "CBClass": "cbCapVal"
+          }
+        },
+        "Title": "Module"
+      }
+    }
+  },
+  "cb": {
+    "root": {
+      "CBClassofNode": {
+        "CBClass": "",
+        "ApplyTo": [
+          ""
+        ]
+      },
+      "CBTypeofNode": {
+        "Type": "",
+        "ApplyTo": [
+          "",
+          ""
+        ]
+      },
+      "CBClassofType": {
+        "CBClass": "",
+        "ApplyTo": [
+          ""
+        ]
+      }
+    }
+  }
+}
