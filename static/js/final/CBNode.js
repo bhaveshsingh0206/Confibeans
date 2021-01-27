@@ -1,6 +1,6 @@
 export default class CBNode {
   constructor() {
-    this.AllowClasses = ["CBText", "CBList"];
+    this.AllowClasses = ["All"];
     this.DisAllowClasses = ["cbType1"];
 
     this.Lod = [

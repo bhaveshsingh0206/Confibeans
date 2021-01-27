@@ -3,6 +3,7 @@
  *Ali Bhavesh
  * Licensed under the MIT (MIT-LICENSE.txt) licence.
  */
+
 function jsonPath(obj, expr, arg) {
   var P = {
     resultType: (arg && arg.resultType) || "VALUE",
@@ -146,3 +147,31 @@ function moduleEvent(element) {
     };
   })();
 }
+
+// document.onclick = function (event) {
+//   if (event === undefined) event = window.event;
+//   console.log(event.target.getAttribute("class"));
+//   event.target.onclick = (function outer() {
+//     return function inner() {
+//       if (event.target.getAttribute("class").includes("CBNode")) {
+//         var cbtree = JSON.parse(localStorage.getItem("cbtree"));
+//         setTimeout(function () {
+//           // $("#renderArea").html(
+//           //   "<div>" + localStorage.getItem("data") + "</div>"
+//           // );
+//           var result = setObj(
+//             cbtree["root"],
+//             event.target.getAttribute("value"),
+//             null
+//           );
+//           setTimeout(function () {
+//             var parent = result[1];
+//             var child = result[0];
+//             $("#renderArea div").remove();
+//             Render(child, parent, parent["Path"]);
+//           }, 1000);
+//         }, 1000);
+//       }
+//     };
+//   })();
+// };

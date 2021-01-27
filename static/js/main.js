@@ -82,7 +82,7 @@ function getDataContainer() {
       // console.log(JSON.stringify(data))
       var cbd = response["cb"];
       // console.log("cbd ", cbd)
-      CntainerObj = new CBContainers(data, cbd);
+      CntainerObj = new CBContainers(data, cbd, null);
       CntainerObj.Parse(data, cbd);
     },
     error: function (err) {
