@@ -492,19 +492,30 @@ export default class CBContainers {
           if (
             cbtree[key]["CB"] == "CBDropdowns" ||
             cbtree[key]["CB"] == "CBRadio" ||
-            cbtree[key]["CB"] == "CBCheckBoxes"
+            cbtree[key]["CB"] == "CBCheckBoxes" ||
+            cbtree[key]["CB"] == "CBText" ||
+            cbtree[key]["CB"] == "CBInput" ||
+            cbtree[key]["CB"] == "CBDate" ||
+            cbtree[key]["CB"] == "CBPanelTitle"
           ) {
             var path = cbtree[key]["Path"];
-            var pathCBD = path;
-            pathCBD = pathCBD.slice(0, pathCBD.length - 5);
-            pathCBD = pathCBD + "cbd..LoV";
+            var value = jsonPath(this.data, path)[0];
+            if (
+              cbtree[key]["CB"] == "CBDropdowns" ||
+              cbtree[key]["CB"] == "CBRadio" ||
+              cbtree[key]["CB"] == "CBCheckBoxes"
+            ) {
+              var pathCBD = path;
+              pathCBD = pathCBD.slice(0, pathCBD.length - 5);
+              pathCBD = pathCBD + "cbd..LoV";
+              var values = jsonPath(this.data, pathCBD)[0];
+            }
+
             var leafobj = dynamicClass(cbtree[key]["CB"]);
-            var path = cbtree[key]["Path"];
             leafobj = new leafobj();
             style = leafobj.styles;
             internalStyle = this.styles[placements];
-            var value = jsonPath(this.data, path)[0];
-            var values = jsonPath(this.data, pathCBD)[0];
+
             switch (cbtree[key]["CB"]) {
               case "CBDropdowns":
                 if (across)
@@ -548,67 +559,57 @@ export default class CBContainers {
                 }
                 this.htmlContent += `</div>`;
                 break;
-            }
-          } else if (
-            cbtree[key]["CB"] == "CBText" ||
-            cbtree[key]["CB"] == "CBInput" ||
-            cbtree[key]["CB"] == "CBDate" ||
-            cbtree[key]["CB"] == "CBPanelTitle"
-          ) {
-            var leafobj = dynamicClass(cbtree[key]["CB"]);
-            var path = cbtree[key]["Path"];
-            leafobj = new leafobj();
-            // console.log(typeof leafobj);
-            style = leafobj.styles;
-            internalStyle = this.styles[placements];
-            if (cbtree[key]["CB"] == "CBText") {
-              //check if across layout has to be applied
-              if (across)
-                this.htmlContent += `<div class=" ${internalStyle} caption across"><p id="${path}" class="${style}">${
-                  jsonPath(this.data, cbtree[key]["Path"])[0]
-                }</p></div>`;
-              else if (parent["CB"] == "CBPropertyBag") {
-                var moduleid = "module" + this.moduleCategories;
-                this.moduleCategories++;
-                this.htmlContent += `<div class="${internalStyle} module_close_caption" id="${moduleid}" onclick="propertyBag(this)"><p id="${path}" class="${style}">${
-                  jsonPath(this.data, cbtree[key]["Path"])[0]
-                }</p></div>`;
-                this.htmlContent += `<div class="moduleTitle none ${internalStyle} across"><p id="${path}" class="${style}">
-                  Property
-                </p></div>
-                <div class="moduleTitle ${internalStyle} none across"><p id="${path}" class="${style}">
-                  Value
-                </p></div>`;
-              } else
-                this.htmlContent += `<div class="caption ${internalStyle}" ><p id="${path}" class="${style}">${
-                  jsonPath(this.data, cbtree[key]["Path"])[0]
-                }</p></div>`;
-            } else if (cbtree[key]["CB"] == "CBPanelTitle") {
-              this.panelCategories += 1;
-              var name = "Panel" + this.panelCategories;
-              if (across) {
-                this.htmlContent += `<div class="panelDiv ${internalStyle} across" id="${name}" onclick="forToggle(this) onbeforeprint="forToggle(this)"><p class="${style}">${
-                  jsonPath(this.data, cbtree[key]["Path"])[0]
-                } <i class="fal fa-chevron-down"></i></p></div>`;
-              } else {
-                this.htmlContent += `<div class="panelDiv ${internalStyle}" id="${name}" onclick="forToggle(this)" onbeforeprint="forToggle(this)"><p class="${style}">${
-                  jsonPath(this.data, cbtree[key]["Path"])[0]
-                } <i class="fal fa-chevron-down"></i></p></div>`;
-              }
-            } else if (cbtree[key]["CB"] == "CBInput") {
-              var inputValue = jsonPath(this.data, cbtree[key]["Path"])[0];
-
-              //check if across layout has to be applied
-              if (across)
-                this.htmlContent += `<div class="${style} ${internalStyle} across"><input id="${path}" type="text" class="${internalStyle}" value="${inputValue}"></input></div>`;
-              else
-                this.htmlContent += `<div class="${style} ${internalStyle}"><input id="${path}" type="text" class="${internalStyle}" value="${inputValue}"></input></div>`;
-            } else {
-              //check if across layout has to be applied
-              if (across)
-                this.htmlContent += `<div class=" ${internalStyle} across"><input id="${path}" type="date" class="" value="${inputValue}"></input></div>`;
-              else
-                this.htmlContent += `<div class=" ${internalStyle}"><input id="${path}" type="date" class="${internalStyle} ${style}" value="${inputValue}"></input></div>`;
+              case "CBText":
+                //check if across layout has to be applied
+                if (across)
+                  this.htmlContent += `<div class=" ${internalStyle} caption across"><p id="${path}" class="${style}">${
+                    jsonPath(this.data, cbtree[key]["Path"])[0]
+                  }</p></div>`;
+                else if (parent["CB"] == "CBPropertyBag") {
+                  var moduleid = "module" + this.moduleCategories;
+                  this.moduleCategories++;
+                  this.htmlContent += `<div class="${internalStyle} module_close_caption" id="${moduleid}" onclick="propertyBag(this)"><p id="${path}" class="${style}">${
+                    jsonPath(this.data, cbtree[key]["Path"])[0]
+                  }</p></div>`;
+                  this.htmlContent += `<div class="moduleTitle none ${internalStyle} across"><p id="${path}" class="${style}">
+                    Property
+                  </p></div>
+                  <div class="moduleTitle ${internalStyle} none across"><p id="${path}" class="${style}">
+                    Value
+                  </p></div>`;
+                } else
+                  this.htmlContent += `<div class="caption ${internalStyle}" ><p id="${path}" class="${style}">${
+                    jsonPath(this.data, cbtree[key]["Path"])[0]
+                  }</p></div>`;
+                break;
+              case "CBInput":
+                // var inputValue = jsonPath(this.data, cbtree[key]["Path"])[0];
+                //check if across layout has to be applied
+                if (across)
+                  this.htmlContent += `<div class="${style} ${internalStyle} across"><input id="${path}" type="text" class="${internalStyle}" value="${value}"></input></div>`;
+                else
+                  this.htmlContent += `<div class="${style} ${internalStyle}"><input id="${path}" type="text" class="${internalStyle}" value="${value}"></input></div>`;
+                break;
+              case "CBDate":
+                //check if across layout has to be applied
+                if (across)
+                  this.htmlContent += `<div class=" ${internalStyle} across"><input id="${path}" type="date" class="" value="${value}"></input></div>`;
+                else
+                  this.htmlContent += `<div class=" ${internalStyle}"><input id="${path}" type="date" class="${internalStyle} ${style}" value="${value}"></input></div>`;
+                break;
+              case "CBPanelTitle":
+                this.panelCategories += 1;
+                var name = "Panel" + this.panelCategories;
+                if (across) {
+                  this.htmlContent += `<div class="panelDiv ${internalStyle} across" id="${name}" onclick="forToggle(this) onbeforeprint="forToggle(this)"><p class="${style}">${
+                    jsonPath(this.data, cbtree[key]["Path"])[0]
+                  } <i class="fal fa-chevron-down"></i></p></div>`;
+                } else {
+                  this.htmlContent += `<div class="panelDiv ${internalStyle}" id="${name}" onclick="forToggle(this)" onbeforeprint="forToggle(this)"><p class="${style}">${
+                    jsonPath(this.data, cbtree[key]["Path"])[0]
+                  } <i class="fal fa-chevron-down"></i></p></div>`;
+                }
+                break;
             }
           }
           across = false; // set across false after html is applied
@@ -616,23 +617,34 @@ export default class CBContainers {
       } else {
         var placements = "Default";
         var internalStyle = "";
+        // if we reach leaf nodes that dont have children
         if (
           cbtree[key]["CB"] == "CBDropdowns" ||
           cbtree[key]["CB"] == "CBRadio" ||
-          cbtree[key]["CB"] == "CBCheckBoxes"
+          cbtree[key]["CB"] == "CBCheckBoxes" ||
+          cbtree[key]["CB"] == "CBText" ||
+          cbtree[key]["CB"] == "CBInput" ||
+          cbtree[key]["CB"] == "CBDate" ||
+          cbtree[key]["CB"] == "CBPanelTitle"
         ) {
           var path = cbtree[key]["Path"];
-          var pathCBD = path;
-          pathCBD = pathCBD.slice(0, pathCBD.length - 5);
-          pathCBD = pathCBD + "cbd..LoV";
+          var value = jsonPath(this.data, path)[0];
+          if (
+            cbtree[key]["CB"] == "CBDropdowns" ||
+            cbtree[key]["CB"] == "CBRadio" ||
+            cbtree[key]["CB"] == "CBCheckBoxes"
+          ) {
+            var pathCBD = path;
+            pathCBD = pathCBD.slice(0, pathCBD.length - 5);
+            pathCBD = pathCBD + "cbd..LoV";
+            var values = jsonPath(this.data, pathCBD)[0];
+          }
+
           var leafobj = dynamicClass(cbtree[key]["CB"]);
-          var path = cbtree[key]["Path"];
           leafobj = new leafobj();
           style = leafobj.styles;
           internalStyle = this.styles[placements];
-          var value = jsonPath(this.data, path)[0];
-          console.log("value ", value);
-          var values = jsonPath(this.data, pathCBD)[0];
+
           switch (cbtree[key]["CB"]) {
             case "CBDropdowns":
               if (across)
@@ -641,6 +653,7 @@ export default class CBContainers {
                 this.htmlContent += `<div class="${style} ${internalStyle}"><select id="${path}">`;
               for (var k = 0; k < values.length; k++) {
                 if (this.isChecked(values[k], value)) {
+                  // console.log("Erorrr->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
                   this.htmlContent += `<option value="${values[k]}" selected>${values[k]}</option>`;
                 } else
                   this.htmlContent += `<option value="${values[k]}">${values[k]}</option>`;
@@ -675,64 +688,51 @@ export default class CBContainers {
               }
               this.htmlContent += `</div>`;
               break;
-          }
-        } else if (
-          cbtree[key]["CB"] == "CBText" ||
-          cbtree[key]["CB"] == "CBInput" ||
-          cbtree[key]["CB"] == "CBDate" ||
-          cbtree[key]["CB"] == "CBPanelTitle"
-        ) {
-          var leafobj = dynamicClass(cbtree[key]["CB"]);
-          var path = cbtree[key]["Path"];
-          leafobj = new leafobj();
-          // console.log(typeof leafobj);
-          style = leafobj.styles;
-          internalStyle = this.styles[placements];
-          if (cbtree[key]["CB"] == "CBText") {
-            //check if across layout has to be applied
-            if (across)
-              this.htmlContent += `<div class=" ${internalStyle} caption across"><p id="${path}" class="${style}">${
-                jsonPath(this.data, cbtree[key]["Path"])[0]
-              }</p></div>`;
-            else
-              this.htmlContent += `<div class="caption ${internalStyle}"><p id="${path}" class="${style}">${
-                jsonPath(this.data, cbtree[key]["Path"])[0]
-              }</p></div>`;
-          } else if (cbtree[key]["CB"] == "CBPanelTitle") {
-            this.panelCategories += 1;
-            var name = "Panel" + this.panelCategories;
-            if (across) {
-              this.htmlContent += `<div class="panelDiv ${internalStyle} across" id="${name}" onclick="forToggle(this) onbeforeprint="forToggle(this)"><p class="${style}">${
-                jsonPath(this.data, cbtree[key]["Path"])[0]
-              } <i class="fal fa-chevron-down"></i></p></div>`;
-            } else {
-              this.htmlContent += `<div class="panelDiv ${internalStyle}" id="${name}" onclick="forToggle(this)" onbeforeprint="forToggle(this)"><p class="${style}">${
-                jsonPath(this.data, cbtree[key]["Path"])[0]
-              } <i class="fal fa-chevron-down"></i></p></div>`;
-            }
-          } else if (cbtree[key]["CB"] == "CBInput") {
-            var inputValue = jsonPath(this.data, cbtree[key]["Path"])[0];
-
-            //check if across layout has to be applied
-            if (across)
-              this.htmlContent += `<div class="${style} ${internalStyle} across"><input id="${path}" type="text" class="${internalStyle}" value="${inputValue}"></input></div>`;
-            else
-              this.htmlContent += `<div class="${style} ${internalStyle}"><input id="${path}" type="text" class="${internalStyle}" value="${inputValue}"></input></div>`;
-          } else {
-            //check if across layout has to be applied
-            if (across)
-              this.htmlContent += `<div class=" ${internalStyle} across"><input id="${path}" type="date" class="" value="${inputValue}"></input></div>`;
-            else
-              this.htmlContent += `<div class=" ${internalStyle}"><input id="${path}" type="date" class="${internalStyle} ${style}" value="${inputValue}"></input></div>`;
+            case "CBText":
+              //check if across layout has to be applied
+              if (across)
+                this.htmlContent += `<div class=" ${internalStyle} caption across"><p id="${path}" class="${style}">${
+                  jsonPath(this.data, cbtree[key]["Path"])[0]
+                }</p></div>`;
+              else
+                this.htmlContent += `<div class="caption ${internalStyle}" ><p id="${path}" class="${style}">${
+                  jsonPath(this.data, cbtree[key]["Path"])[0]
+                }</p></div>`;
+              break;
+            case "CBInput":
+              // var inputValue = jsonPath(this.data, cbtree[key]["Path"])[0];
+              //check if across layout has to be applied
+              if (across)
+                this.htmlContent += `<div class="${style} ${internalStyle} across"><input id="${path}" type="text" class="${internalStyle}" value="${value}"></input></div>`;
+              else
+                this.htmlContent += `<div class="${style} ${internalStyle}"><input id="${path}" type="text" class="${internalStyle}" value="${value}"></input></div>`;
+              break;
+            case "CBDate":
+              //check if across layout has to be applied
+              if (across)
+                this.htmlContent += `<div class=" ${internalStyle} across"><input id="${path}" type="date" class="" value="${value}"></input></div>`;
+              else
+                this.htmlContent += `<div class=" ${internalStyle}"><input id="${path}" type="date" class="${internalStyle} ${style}" value="${value}"></input></div>`;
+              break;
+            case "CBPanelTitle":
+              this.panelCategories += 1;
+              var name = "Panel" + this.panelCategories;
+              if (across) {
+                this.htmlContent += `<div class="panelDiv ${internalStyle} across" id="${name}" onclick="forToggle(this) onbeforeprint="forToggle(this)"><p class="${style}">${
+                  jsonPath(this.data, cbtree[key]["Path"])[0]
+                } <i class="fal fa-chevron-down"></i></p></div>`;
+              } else {
+                this.htmlContent += `<div class="panelDiv ${internalStyle}" id="${name}" onclick="forToggle(this)" onbeforeprint="forToggle(this)"><p class="${style}">${
+                  jsonPath(this.data, cbtree[key]["Path"])[0]
+                } <i class="fal fa-chevron-down"></i></p></div>`;
+              }
+              break;
           }
         }
-        across = false;
+        across = false; // set across false after html is applied
       }
     });
-    // if render is true we sent html content
-    console.log("this.parent", this.parent);
-    console.log("parent", parent);
-    console.log(this.parent == parent);
+    // if all nodes have been processed
     if (parent == null || this.parent == parent) {
       var t = this;
       window.openNode = function (element) {
@@ -855,6 +855,7 @@ export default class CBContainers {
       } else {
         //get value of leaf node
         console.log("leafobj ", cbtree[key]["CB"]);
+        console.log("leafobj ", cbtree[key]["Path"]);
         // console.log("cbtree[key] ",JSON.stringify(cbtree[key]))
         var leafobj = dynamicClass(cbtree[key]["CB"]);
         leafobj = new leafobj();

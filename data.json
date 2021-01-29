@@ -94,12 +94,5 @@
       }
     }
   },
-  "AelectGender": {
-    "Aitle": "Select your Gender",
-    "Value": ["Male"],
-    "cbd": {
-      "CBClass": "CBRadioButtons",
-      "LoV": ["Male", "Female", "Other"]
-    }
-  }
+  "AelectGender": "okay"
 }
