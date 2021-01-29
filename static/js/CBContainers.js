@@ -17,7 +17,6 @@ export default class CBContainers {
       Toggle: "toggle",
       None: "none",
     };
-    this.radioCategories = 0;
     this.checkBoxCategories = 0;
     this.panelCategories = 0;
     this.moduleCategories = 0;
@@ -351,7 +350,7 @@ export default class CBContainers {
       console.log(JSON.stringify(t.cbTree));
       localStorage.setItem("cbtree", JSON.stringify(t.cbTree));
       t.Render(t.cbTree["root"], null);
-    }, 1000);
+    }, 750);
   }
 
   Render(cbtree, parent) {
@@ -374,15 +373,13 @@ export default class CBContainers {
         var style = "";
         // render = false;
       }
-      if (cbtree[key]["CB"] == "CBNode") this.FolderGenerator(key, parent);
+      if (cbtree[key]["CB"] == "CBNode")
+        this.FolderGenerator(key, cbtree[key]["Path"]);
       else if (cbtree[key].hasOwnProperty("Children")) {
         // if chiildren exists
         var children = cbtree[key]["Children"]; // set children
         // cmd logic start
         if (parent != null) {
-          if (cbtree[key]["CB"] == "CBRadioButtons") {
-            this.radioCategories++;
-          }
           if (cbtree[key]["CB"] == "CBMultiChoice") {
             this.checkBoxCategories++;
           }
@@ -524,7 +521,6 @@ export default class CBContainers {
                 this.htmlContent += `</select></div>`;
                 break;
               case "CBRadio":
-                var radioName = "Category" + this.radioCategories;
                 if (across)
                   this.htmlContent += `<div class="${style} ${internalStyle} across">`;
                 else
@@ -602,25 +598,6 @@ export default class CBContainers {
             } else if (cbtree[key]["CB"] == "CBInput") {
               var inputValue = jsonPath(this.data, cbtree[key]["Path"])[0];
 
-              //this is for default cbcapval rendering - currently useless
-              // if(this.jsonChecker(inputValue)){
-              //   inputValue = inputValue.replace(/'/g,"\"");
-              //   var inputObj = JSON.parse(inputValue);
-              //   console.log(inputObj);
-              //   for(var inputKey in inputObj){
-              //     console.log(inputKey);
-              //     console.log(inputObj[inputKey]);
-              //     this.htmlContent += `<div>`;
-              //     this.htmlContent += `<div class=" default across"><p id="${path}" class="${style}">${
-              //       inputKey
-              //     }</p></div>`;
-              //     this.htmlContent += `<div class="${style} ${internalStyle} across"><input id="${path}" type="text" class="${internalStyle}" value="${
-              //       inputObj[inputKey][0]
-              //     }"></input></div>`;
-              //     this.htmlContent += `</div>`;
-              //   }
-              // }
-
               //check if across layout has to be applied
               if (across)
                 this.htmlContent += `<div class="${style} ${internalStyle} across"><input id="${path}" type="text" class="${internalStyle}" value="${inputValue}"></input></div>`;
@@ -664,7 +641,6 @@ export default class CBContainers {
                 this.htmlContent += `<div class="${style} ${internalStyle}"><select id="${path}">`;
               for (var k = 0; k < values.length; k++) {
                 if (this.isChecked(values[k], value)) {
-                  // console.log("Erorrr->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
                   this.htmlContent += `<option value="${values[k]}" selected>${values[k]}</option>`;
                 } else
                   this.htmlContent += `<option value="${values[k]}">${values[k]}</option>`;
@@ -672,7 +648,6 @@ export default class CBContainers {
               this.htmlContent += `</select></div>`;
               break;
             case "CBRadio":
-              var radioName = "Category" + this.radioCategories;
               if (across)
                 this.htmlContent += `<div class="${style} ${internalStyle} across">`;
               else
@@ -758,36 +733,34 @@ export default class CBContainers {
     console.log("this.parent", this.parent);
     console.log("parent", parent);
     console.log(this.parent == parent);
-    if (parent == null || this.parent["Path"] == parent["Path"]) {
+    if (parent == null || this.parent == parent) {
       var t = this;
       window.openNode = function (element) {
         element.onclick = (function outer() {
-          return function inner() {
-            if (element.getAttribute("class").includes("CBNode")) {
-              t.htmlContent = "";
-              // console.log(result);
-              setTimeout(function () {
-                t.FindParentChild(
-                  t.cbTree["root"],
-                  element.getAttribute("value")
-                );
-                var parent = t.parent;
-                console.log(parent);
-                var child = parent["Children"];
-                console.log(child);
-                if (parent["Path"]) {
-                  console.log("1");
-                  t.parent = parent;
-                  $("#renderArea div").remove();
-                  t.Render(child, parent);
-                } else {
-                  console.log("2");
-                  $("#renderArea div").remove();
-                  t.Render(child, null);
-                }
-              }, 1000);
-            }
-          };
+          if (element.getAttribute("class").includes("CBNode")) {
+            t.htmlContent = "";
+            // console.log(result);
+            setTimeout(function () {
+              t.FindParentChild(
+                t.cbTree["root"],
+                element.getAttribute("value")
+              );
+              var parent = t.parent;
+              console.log(parent);
+              var child = parent["Children"];
+              console.log(child);
+              if (parent["Path"]) {
+                console.log("1");
+                t.parent = parent;
+                $("#renderArea div").remove();
+                t.Render(child, parent);
+              } else {
+                console.log("2");
+                $("#renderArea div").remove();
+                t.Render(child, null);
+              }
+            }, 500);
+          }
         })();
       };
       setTimeout(function () {
@@ -805,11 +778,14 @@ export default class CBContainers {
     }
   }
 
-  FolderGenerator(key) {
+  FolderGenerator(key, path) {
+    var title = this.findDataNode(path);
+    title = title.split(";");
+    title = title[title.length - 1];
     this.htmlContent +=
-      `<div class="CBNode module_close" onclick="openNode(this);" value="${key}">` +
-      key +
-      `</div>`;
+      `<div class="CBNode" ondblclick="openNode(this);" value="${key}"><p style="display:inline; margin-right:10px"><i class="fa fa-folder"></i></p><div style="display:inline">` +
+      title +
+      `</div></div>`;
     return;
   }
 
@@ -1023,3 +999,21 @@ export default class CBContainers {
 // }
 
 //
+//this is for default cbcapval rendering - currently useless
+// if(this.jsonChecker(inputValue)){
+//   inputValue = inputValue.replace(/'/g,"\"");
+//   var inputObj = JSON.parse(inputValue);
+//   console.log(inputObj);
+//   for(var inputKey in inputObj){
+//     console.log(inputKey);
+//     console.log(inputObj[inputKey]);
+//     this.htmlContent += `<div>`;
+//     this.htmlContent += `<div class=" default across"><p id="${path}" class="${style}">${
+//       inputKey
+//     }</p></div>`;
+//     this.htmlContent += `<div class="${style} ${internalStyle} across"><input id="${path}" type="text" class="${internalStyle}" value="${
+//       inputObj[inputKey][0]
+//     }"></input></div>`;
+//     this.htmlContent += `</div>`;
+//   }
+// }

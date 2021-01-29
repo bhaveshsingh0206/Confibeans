@@ -81,7 +81,25 @@
           "CBClass": "cbCapVal"
         }
       }
+    },
+    "DocumentIndexersCBZ": {
+      "DocumentIndexersCBZZ": {
+        "DI_ROI_DETECTION_HOSTNAMES": {
+          "Caption": "DI_ROI_DETECTION_HOSTNAME",
+          "Value": "192.168.1.63",
+          "cbd": {
+            "CBClass": "cbCapVal"
+          }
+        }
+      }
     }
   },
-  "Aitleeee": "Select your Gender"
+  "AelectGender": {
+    "Aitle": "Select your Gender",
+    "Value": ["Male"],
+    "cbd": {
+      "CBClass": "CBRadioButtons",
+      "LoV": ["Male", "Female", "Other"]
+    }
+  }
 }
