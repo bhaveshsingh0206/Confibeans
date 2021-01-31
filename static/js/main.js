@@ -104,3 +104,10 @@ $("#save").click(() => {
     }, 2000);
   }
 });
+
+$("#upButton").click(() => {
+  if (CntainerObj) {
+    if (CntainerObj.parent != null) CntainerObj.NodeUp();
+    else alert("Already in Root Node");
+  }
+});

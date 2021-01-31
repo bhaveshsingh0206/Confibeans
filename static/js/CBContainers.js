@@ -20,7 +20,9 @@ export default class CBContainers {
     this.checkBoxCategories = 0;
     this.panelCategories = 0;
     this.moduleCategories = 0;
+    this.current = null;
     this.parent = null;
+    this.grandparent = null;
   }
 
   checkInCBD(path, cbd) {
@@ -348,7 +350,6 @@ export default class CBContainers {
     var t = this;
     setTimeout(function () {
       console.log(JSON.stringify(t.cbTree));
-      localStorage.setItem("cbtree", JSON.stringify(t.cbTree));
       t.Render(t.cbTree["root"], null);
     }, 750);
   }
@@ -732,8 +733,8 @@ export default class CBContainers {
         across = false; // set across false after html is applied
       }
     });
-    // if all nodes have been processed
-    if (parent == null || this.parent == parent) {
+    // if all nodes have  been processed
+    if (parent == null || this.current == parent) {
       var t = this;
       window.openNode = function (element) {
         element.onclick = (function outer() {
@@ -745,17 +746,15 @@ export default class CBContainers {
                 t.cbTree["root"],
                 element.getAttribute("value")
               );
-              var parent = t.parent;
-              console.log(parent);
+              var parent = t.current;
+              // console.log(parent);
               var child = parent["Children"];
-              console.log(child);
+              // console.log(child);
               if (parent["Path"]) {
-                console.log("1");
-                t.parent = parent;
+                t.current = parent;
                 $("#renderArea div").remove();
                 t.Render(child, parent);
               } else {
-                console.log("2");
                 $("#renderArea div").remove();
                 t.Render(child, null);
               }
@@ -784,27 +783,51 @@ export default class CBContainers {
     title = title[title.length - 1];
     this.htmlContent +=
       `<div class="CBNode" ondblclick="openNode(this);" value="${key}"><p style="display:inline; margin-right:10px"><i class="fa fa-folder"></i></p><div style="display:inline">` +
-      title +
+      key +
       `</div></div>`;
     return;
   }
 
-  FindParentChild(obj, query) {
-    console.log("ENTERED");
+  FindParentChild(obj, query, grandparent) {
     for (var key in obj) {
       var value = obj[key];
-      console.log("key", key);
-      console.log("query", query);
       if (key === query) {
-        console.log(obj[key]);
-        this.parent = obj[key];
-        console.log(this.parent);
+        this.current = obj[key];
+        this.parent = obj;
+        this.grandparent = grandparent;
         return;
       }
       if (typeof value === "object") {
-        this.FindParentChild(value, query);
+        this.FindParentChild(value, query, obj);
       }
     }
+  }
+
+  FindParentKey(obj, value) {
+    var answer = "";
+    if (this.cbTree["root"] == value) return null;
+    // console.log("value", value);
+    for (var key in obj) {
+      if (obj[key] === value) {
+        answer = key;
+        break;
+      }
+      if (typeof obj[key] === "object") {
+        answer = this.FindParentKey(obj[key], value);
+      }
+      if (answer !== "") break;
+    }
+    return answer;
+  }
+
+  NodeUp() {
+    $("#renderArea div").remove();
+    this.htmlContent = "";
+    console.log("calling");
+    var key = this.FindParentKey(this.cbTree["root"], this.grandparent);
+    console.log(key);
+    this.Render(this.parent, null);
+    this.FindParentChild(this.cbTree, key);
   }
 
   isChecked(value, valueList) {
@@ -845,6 +868,7 @@ export default class CBContainers {
   removeElement(item) {
     return item != "..";
   }
+
   Collect(cbtree) {
     // console.log("In collect")
     var keys = Object.keys(cbtree);
