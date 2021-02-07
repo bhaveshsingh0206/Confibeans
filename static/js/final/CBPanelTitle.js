@@ -1,5 +1,11 @@
 export default class CBPanelTitle {
-    styles = "panel";
-    
+  constructor() {
+    this.styles = "panel";
   }
-  
+
+  getValue(path) {
+    var leaf = document.getElementById(path);
+    var value = leaf.textContent;
+    return value;
+  }
+}

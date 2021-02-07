@@ -1,4 +1,5 @@
-import dynamicClass from "./classes.js";
+/* eslint-disable no-undef */
+// import dynamicClass from "./classes.js";
 import CBContainers from "./CBContainers.js";
 // $(".get").click(() => {
 //   getData();
@@ -92,12 +93,13 @@ function getDataContainer() {
 }
 
 $("#get").click(() => {
+  $("#controlArea").toggleClass("none");
   getDataContainer();
 });
 
 $("#save").click(() => {
   if (CntainerObj) {
-    CntainerObj.Collect(CntainerObj.cbTree["root"]);
+    CntainerObj.Collect(CntainerObj.current["Children"]);
     setTimeout(() => {
       console.log("------");
       console.log(JSON.stringify(CntainerObj.data));

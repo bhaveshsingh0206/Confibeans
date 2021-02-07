@@ -1,3 +1,5 @@
+/* eslint-disable no-undef */
+/* eslint-disable no-unused-vars */
 /* JSONPath 0.8.0 - XPath for JSON
  *
  *Ali Bhavesh
@@ -11,7 +13,7 @@ function jsonPath(obj, expr, arg) {
     normalize: function (expr) {
       var subx = [];
       return expr
-        .replace(/[\['](\??\(.*?\))[\]']/g, function ($0, $1) {
+        .replace(/[['](\??\(.*?\))[\]']/g, function ($0, $1) {
           return "[#" + (subx.push($1) - 1) + "]";
         })
         .replace(/'?\.'?|\['?/g, ";")
@@ -38,7 +40,7 @@ function jsonPath(obj, expr, arg) {
         var x = expr.split(";"),
           loc = x.shift();
         x = x.join(";");
-        if (val && val.hasOwnProperty(loc))
+        if (val && Object.prototype.hasOwnProperty.call(val, loc))
           P.trace(x, val[loc], path + ";" + loc);
         else if (loc === "*")
           P.walk(loc, x, val, path, function (m, l, x, v, p) {
@@ -77,7 +79,8 @@ function jsonPath(obj, expr, arg) {
           if (i in val) f(i, loc, expr, val, path);
       } else if (typeof val === "object") {
         for (var m in val)
-          if (val.hasOwnProperty(m)) f(m, loc, expr, val, path);
+          if (Object.prototype.hasOwnProperty.call(val, m))
+            f(m, loc, expr, val, path);
       }
     },
     slice: function (loc, expr, val, path) {
@@ -127,6 +130,7 @@ function jsonPath(obj, expr, arg) {
 function forToggle(element) {
   console.log("fotoggle");
   var tag = "#" + element.id;
+  // eslint-disable-next-line no-undef
   $(tag).siblings().toggle();
 }
 

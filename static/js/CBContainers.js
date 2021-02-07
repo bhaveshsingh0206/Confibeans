@@ -1,3 +1,5 @@
+/* eslint-disable no-undef */
+/* eslint-disable no-redeclare */
 // @author - Ali & Bhavesh
 import dynamicClass from "./classes.js";
 export default class CBContainers {
@@ -18,7 +20,6 @@ export default class CBContainers {
       None: "none",
     };
     this.checkBoxCategories = 0;
-    this.panelCategories = 0;
     this.moduleCategories = 0;
     this.current = null;
     this.parent = null;
@@ -26,11 +27,12 @@ export default class CBContainers {
   }
 
   checkInCBD(path, cbd) {
+    var cbClass;
     var CBClassofNode = cbd["root"]["CBClassofNode"];
     var paths = CBClassofNode["ApplyTo"];
     for (var i = 0; i < paths.length; i++) {
       if (path === paths[i]) {
-        var cbClass = CBClassofNode["CBClass"];
+        cbClass = CBClassofNode["CBClass"];
         return cbClass;
       }
       if (i == paths.length - 1) {
@@ -42,7 +44,7 @@ export default class CBContainers {
             var CBClassofType = cbd["root"]["CBClassofType"];
             var types = CBClassofType["ApplyTo"];
             if (types.includes(type)) {
-              var cbClass = CBClassofType["CBClass"];
+              cbClass = CBClassofType["CBClass"];
               return cbClass;
             }
           }
@@ -169,7 +171,7 @@ export default class CBContainers {
           type = "Object";
           this.setObj(this.cbTree, newName, Name, pathMain, type, null);
           // if cbd exists in this element we set CB of node based on CBClass
-          if (obj[i - 1].hasOwnProperty("cbd")) {
+          if (Object.prototype.hasOwnProperty.call(obj[i - 1], "cbd")) {
             elementName = Name + y;
             type = "Object";
             var path_obj = pathMain;
@@ -376,7 +378,7 @@ export default class CBContainers {
       }
       if (cbtree[key]["CB"] == "CBNode")
         this.FolderGenerator(key, cbtree[key]["Path"]);
-      else if (cbtree[key].hasOwnProperty("Children")) {
+      else if (Object.prototype.hasOwnProperty.call(cbtree[key], "Children")) {
         // if chiildren exists
         var children = cbtree[key]["Children"]; // set children
         // cmd logic start
@@ -600,13 +602,13 @@ export default class CBContainers {
                 break;
               case "CBPanelTitle":
                 this.panelCategories += 1;
-                var name = "Panel" + this.panelCategories;
+
                 if (across) {
-                  this.htmlContent += `<div class="panelDiv ${internalStyle} across" id="${name}" onclick="forToggle(this) onbeforeprint="forToggle(this)"><p class="${style}">${
+                  this.htmlContent += `<div class="panelDiv ${internalStyle} across" id="${path}" onclick="forToggle(this) onbeforeprint="forToggle(this)"><p class="${style}">${
                     jsonPath(this.data, cbtree[key]["Path"])[0]
                   } <i class="fal fa-chevron-down"></i></p></div>`;
                 } else {
-                  this.htmlContent += `<div class="panelDiv ${internalStyle}" id="${name}" onclick="forToggle(this)" onbeforeprint="forToggle(this)"><p class="${style}">${
+                  this.htmlContent += `<div class="panelDiv ${internalStyle}" id="${path}" onclick="forToggle(this)" onbeforeprint="forToggle(this)"><p class="${style}">${
                     jsonPath(this.data, cbtree[key]["Path"])[0]
                   } <i class="fal fa-chevron-down"></i></p></div>`;
                 }
@@ -716,14 +718,12 @@ export default class CBContainers {
                 this.htmlContent += `<div class=" ${internalStyle}"><input id="${path}" type="date" class="${internalStyle} ${style}" value="${value}"></input></div>`;
               break;
             case "CBPanelTitle":
-              this.panelCategories += 1;
-              var name = "Panel" + this.panelCategories;
               if (across) {
-                this.htmlContent += `<div class="panelDiv ${internalStyle} across" id="${name}" onclick="forToggle(this) onbeforeprint="forToggle(this)"><p class="${style}">${
+                this.htmlContent += `<div class="panelDiv ${internalStyle} across" id="${path}" onclick="forToggle(this) onbeforeprint="forToggle(this)"><p class="${style}">${
                   jsonPath(this.data, cbtree[key]["Path"])[0]
                 } <i class="fal fa-chevron-down"></i></p></div>`;
               } else {
-                this.htmlContent += `<div class="panelDiv ${internalStyle}" id="${name}" onclick="forToggle(this)" onbeforeprint="forToggle(this)"><p class="${style}">${
+                this.htmlContent += `<div class="panelDiv ${internalStyle}" id="${path}" onclick="forToggle(this)" onbeforeprint="forToggle(this)"><p class="${style}">${
                   jsonPath(this.data, cbtree[key]["Path"])[0]
                 } <i class="fal fa-chevron-down"></i></p></div>`;
               }
@@ -779,11 +779,11 @@ export default class CBContainers {
 
   FolderGenerator(key, path) {
     var title = this.findDataNode(path);
-    title = title.split(";");
-    title = title[title.length - 1];
+    var arr = title.split(";");
+    title = arr[arr.length - 1];
     this.htmlContent +=
       `<div class="CBNode" ondblclick="openNode(this);" value="${key}"><p style="display:inline; margin-right:10px"><i class="fa fa-folder"></i></p><div style="display:inline">` +
-      key +
+      title +
       `</div></div>`;
     return;
   }
@@ -855,7 +855,7 @@ export default class CBContainers {
   findDataNode(path) {
     var subx = [];
     return path
-      .replace(/[\['](\??\(.*?\))[\]']/g, function ($0, $1) {
+      .replace(/[['](\??\(.*?\))[\]']/g, function ($0, $1) {
         return "[#" + (subx.push($1) - 1) + "]";
       })
       .replace(/'?\.'?|\['?/g, ";")
@@ -872,8 +872,12 @@ export default class CBContainers {
   Collect(cbtree) {
     // console.log("In collect")
     var keys = Object.keys(cbtree);
-    keys.forEach((key, j) => {
-      if (cbtree[key].hasOwnProperty("Children")) {
+    keys.forEach((key) => {
+      if (cbtree[key]["CB"] == "CBNode") {
+        console.log("nothing");
+      } else if (
+        Object.prototype.hasOwnProperty.call(cbtree[key], "Children")
+      ) {
         var children = cbtree[key]["Children"];
         this.Collect(children);
       } else {
