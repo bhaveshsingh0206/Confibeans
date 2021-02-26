@@ -131,7 +131,7 @@ function forToggle(element) {
   console.log("fotoggle");
   var tag = "#" + element.id;
   // eslint-disable-next-line no-undef
-  $(tag).siblings().toggle();
+  $(tag).siblings().toggleClass("none");
 }
 
 function propertyBag(element) {

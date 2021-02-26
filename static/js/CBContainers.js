@@ -8,6 +8,11 @@ export default class CBContainers {
     this.z = 1;
     this.cbd = cbd;
     this.data = data;
+    this.publishers = []
+    this.subscribers = []
+
+    this.publishList = []
+    this.subscibeList = []
     localStorage.setItem("data", JSON.stringify(data));
     this.htmlContent = "";
     this.styles = {
@@ -72,6 +77,14 @@ export default class CBContainers {
       return null;
     }
   }
+
+  publish(node, event){
+    var obj = {}
+    obj["Type"] = node["CB"]
+    obj["Publishers"] = node["Path"]
+    obj["Event"] = event
+    this.publishers.push(obj)
+  }
   newNode(path, type, parent = null, iscb = null) {
     var node = {};
     var children = path.split("..");
@@ -129,8 +142,20 @@ export default class CBContainers {
         }
       }
     }
+    this.publish(node, this.publishList)
     return node;
   }
+  readPublishersAndSubscribers(cbd) {
+    if (cbd["root"]["Publish"]) {
+      this.publishList = cbd["root"]["Publish"]
+    }
+
+    if (cbd["root"]["Subscribe"]) {
+      this.subscribeList = cbd["root"]["Subscribe"]
+    }
+  }
+  
+
   setObj(obj, query, name, prop, type, exist) {
     var node;
     for (var key in obj) {
@@ -347,11 +372,13 @@ export default class CBContainers {
 
   Parse(data, cbd) {
     this.cbd = cbd;
+    this.readPublishersAndSubscribers(this.cbd)
     this.data = data;
     this.restructure(data, "Node", "");
     var t = this;
     setTimeout(function () {
       console.log(JSON.stringify(t.cbTree));
+      console.log(JSON.stringify(t.publishers))
       t.Render(t.cbTree["root"], null);
     }, 750);
   }

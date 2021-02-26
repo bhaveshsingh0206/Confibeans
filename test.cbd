@@ -11,6 +11,14 @@
         "CBClassofType":{
             "CBClass":"",
             "ApplyTo":[""]
-        }
+        },
+        "Publish":[
+            "Click", "DoubleClick"
+        ],
+        "Subscribe":[
+            {
+                "":""
+            }
+        ]
     }
 }
